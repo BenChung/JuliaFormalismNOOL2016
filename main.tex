@@ -39,12 +39,14 @@
 
 \newcommand{\OK}[1]{#1\;\text{OK}}
 \newcommand{\abstype}[2]{\xt{abstract}~#1 <: #2}
-\newcommand{\oftype}[2]{#1~::~#2}
+\newcommand{\oftype}[2]{#1\,::\,#2}
+\newcommand{\m}[2]{{#1}(#2)}
 \newcommand{\contype}[2]{\xt{type}~#1 <: #2}
 \newcommand{\any}{\xt{any}}
 
 \newcommand{\exact}[1]{{\llbracket #1 \rrbracket_{\xt{exact}}}}
-\newcommand{\usable}[1]{{\llbracket #1 \rrbracket_{\xt{usable}}}}
+\newcommand{\usable}[1]{{\llbracket #1 \rrbracket_{\xt{}}}}
+\renewcommand{\ldots}{...}
 
 
 \conferenceinfo{NOOL '16}{Month d--d, 20yy, City, ST, Country} 
@@ -52,7 +54,7 @@
 \copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
 \copyrightdoi{nnnnnnn.nnnnnnn}
 \begin{document}
-\title{Bottom Up Objects - Static Typing Without Types} 
+\title{Bottom Up Objects: Static Typing Without Types} 
 \authorinfo{Benjamin Chung \and Paley Li \and Jan Vitek}{Northeastern University}{bchung@ccs.neu.edu \and \{pa.li,j.vitek\}@neu.edu} % Annon : Benjamin Chung, Jan Vitek}{Northeastern University}{}
 \maketitle
 % We should probably have some more introductory/motivational material herezies
@@ -144,7 +146,7 @@ Closest candidates are:
 \begin{align*}
 t ::=~& n ~|~ \any\\
 d ::=~& \abstype{n}{t} ~|~ \contype{n}{t} \\
-  & |~ m(a~::~t, ~\ldots) = e\\
+  & |~ \m{m}{\oftype{a}{t}, ~\ldots} = e\\
 e ::=~& x ~|~ \xt{new} ~ n(e,~\ldots) ~|~ m(e,~\ldots) \\
 \end{align*}
 \caption{LALALA}
@@ -156,10 +158,14 @@ e ::=~& x ~|~ \xt{new} ~ n(e,~\ldots) ~|~ m(e,~\ldots) \\
 
 \begin{figure}
 \begin{mathpar}
-\inferrule*[lab={\tiny TAbs}]{ }{ }
+\inferrule*[lab={\tiny TAbsSelf}]{ }{ \m{m}{\ldots, \oftype{a}{A}, \ldots} \in \usable{A} }
 
-\inferrule*[lab={\tiny TCon}]{ }{ \OK{\contype{C}{t}} }
+\inferrule*[lab={\tiny TConSelf}]{ }{ \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C} }
+
+\inferrule*[lab={\tiny TAbsChild}]{\forall C <: A, \m{m}{\ldots} \in \usable{C}\\ \forall A' <: A, \m{m}{\ldots} \in \usable{A'}}{ \m{m}{\ldots} \in \usable{A} }
+
 \end{mathpar}
+\caption{LALALA}
 \end{figure}
 \bibliographystyle{plain}
 \bibliography{main}
