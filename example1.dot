@@ -1,0 +1,13 @@
+digraph G {
+	node [shape=circle];
+	{rank=source;A_1;}
+	node [shape=box];
+	{rank=same; C_1; C_2;}
+	{rank=sink; C_3;}
+	node [shape=circle];
+	A_2;
+	C_1 -> A_1;
+	C_2 -> A_1;
+	A_2 -> A_1;
+	C_3 -> A_2;
+}
