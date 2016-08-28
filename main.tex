@@ -41,6 +41,10 @@
 \newcommand{\abstype}[2]{\xt{abstract}~#1 <: #2}
 \newcommand{\oftype}[2]{#1~::~#2}
 \newcommand{\contype}[2]{\xt{type}~#1 <: #2}
+\newcommand{\any}{\xt{any}}
+
+\newcommand{\exact}[1]{\M{\llbracket #1 \rrbracket_{\xt{exact}}}}
+\newcommand{\usable}[1]{\M{\llbracket #1 \rrbracket_{\xt{usable}}}}
 
 
 \conferenceinfo{NOOL '16}{Month d--d, 20yy, City, ST, Country} 
@@ -138,7 +142,7 @@ Closest candidates are:
 
 \begin{figure}
 \begin{align*}
-t ::=~& n ~|~ \xt{any}\\
+t ::=~& n ~|~ \any\\
 d ::=~& \abstype{n}{t} ~|~ \contype{n}{t} \\
   & |~ m(a~::~t, ~\ldots) = e\\
 e ::=~& x ~|~ \xt{new} ~ n(e,~\ldots) ~|~ m(e,~\ldots) \\
@@ -148,7 +152,10 @@ e ::=~& x ~|~ \xt{new} ~ n(e,~\ldots) ~|~ m(e,~\ldots) \\
 
 \begin{figure}
 \begin{mathpar}
-\inferrule*[lab={\tiny TAbs}]{ \bigcap_{C <: A} C \bigcap_{A' <: A} A' \cap \top = A}{ \OK{\abstype{A}{t}} }
+\inferrule*[lab={\tiny TAbs}]{ \real{A} \cup 
+	\bigcap_{C <: A} \usable{C} 
+	\bigcap_{A' <: A} \usable{A'} 
+	\cap \usable{\any} = A}{ \OK{\abstype{A}{t}} }
 
 \inferrule*[lab={\tiny TCon}]{ }{ \OK{\contype{C}{t}} }
 \end{mathpar}
