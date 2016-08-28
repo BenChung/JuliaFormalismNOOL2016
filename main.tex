@@ -176,10 +176,10 @@ call \jolt.
 
 \begin{figure}
 \begin{align*}
-t ::=~& n ~|~ \any\\
-d ::=~& \abstype{n}{t} ~|~ \contype{n}{t} \\
+t ::=~& A ~|~ C ~|~ \any\\
+d ::=~& \abstype{A}{t} ~|~ \contype{C}{t} \\
   & |~ \m{m}{\oftype{a}{t}, ~\ldots} = e\\
-e ::=~& x ~|~ \xt{new} ~ n(e,~\ldots) ~|~ m(e,~\ldots) \\
+e ::=~& x ~|~ \xt{new} ~ C() ~|~ m(e,~\ldots) \\
 \end{align*}
 \caption{Static synatx of \jolt}
 \label{fm:syntax}
