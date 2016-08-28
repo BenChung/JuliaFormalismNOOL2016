@@ -39,13 +39,15 @@
 
 \newcommand{\OK}[1]{#1\;\text{OK}}
 \newcommand{\abstype}[2]{\xt{abstract}~#1 <: #2}
-\newcommand{\oftype}[2]{#1~::~#2}
+\newcommand{\oftype}[2]{#1\,::\,#2}
+\newcommand{\m}[2]{{#1}(#2)}
 \newcommand{\contype}[2]{\xt{type}~#1 <: #2}
 \newcommand{\any}{\xt{any}}
 \newcommand{\jolt}{\xt{JOLT}}
 
 \newcommand{\exact}[1]{{\llbracket #1 \rrbracket_{\xt{exact}}}}
-\newcommand{\usable}[1]{{\llbracket #1 \rrbracket_{\xt{usable}}}}
+\newcommand{\usable}[1]{{\llbracket #1 \rrbracket_{\xt{}}}}
+\renewcommand{\ldots}{...}
 
 
 \conferenceinfo{NOOL '16}{Month d--d, 20yy, City, ST, Country} 
@@ -97,45 +99,25 @@ R or Matlab, and has a number of features designed
 to support numeric computation and other tasks common
 in scientific work.
 
-Julia departs from the object oriented norms in all 
-three ways:
+\section{Julia}
+
+From the perspective of object systems, Julia has several interesting features:
 \begin{itemize}
-\item \emph{Multiple dispatch},using runtime type
-information to dispatch to the ``most specific'' method.
-\item \emph{No explicit classes or interfaces} - 
-but Julia does have subtyping, over structs (which are leaves in
-the inheritance heirarchy, and act as records) and for 
-abstract types, which are empty labels that allow the 
-construction of heirarchies of types.
-\item \emph{Dynamic typing}. Julia is dynamically typed,
-but most Julia programs are heavily type annotated to leverage
-Julia's multiple dispatch.
+\item Julia is \emph{dynamically typed}, and has no mechanism for statically
+checking type correctness. However, as illustrated in figure~\ref{code:broken},
+Julia code has many types.
+\item The reason for all of these types is \emph{dispatch}. Julia provides 
+full multimethod dispatch based on \emph{runtime type tags}, letting programmers
+write code that is highly specified for a specific value.
+\item However, one of the odder properties of this system is that Julia does not
+allow explicit procedural interfaces, one of the key features of traditional 
+object systems. Instead, Julia's interfaces, called \emph{abstract types}, 
+define no explicit methods, relying on ``a collection of informal interfaces''
+\cite{juliadocu} to abstract over implementations.
 \end{itemize}
 
-For our purposes, the second deviation is the most interesting, as in Julia
-abstract types, the only types that can be subtyped from, cannot define an
-interface that can be safely consumed. An example of a Julia inheritance hierarchy
-is shown in figure~\ref{fig:algo}, where $A_1$ and $A_2$ are abstract types and
-$C_1$ through $C_3$ are structs or concrete types.
-
-Julia programs do have a notion of a functional interface, however, but it does
-not arise from the language itself. Julia programmers leverage the third property
-- dynamic typing - to perform operations on an abstract type that cannot be supported
-by the type itself, following interfaces defined by convention, an idiom that is suggested
-by the language documentation~\cite{juliadocu}.
-
-The problem with this approach arises in situations like the one shown in figure~\ref{code:broken}.
-Here, we expect the function \xt{example} to work on anything of type \xt{A1}, which we then
-try and call in \xt{problem}. This works fine if we just call it with a \xt{C1}, which has
-a function \xt{example} defined for it, but if we call it with a \xt{C3} as seen on line 12,
-then the pictured error message is produced, as \xt{C3} has no method \xt{example}.
-
-We propose that we can check these conventions statically, using the type information that
-is already in the program. Our system structurally infers the interfaces of abstract types
-from concrete implementations, then checks that those interfaces are used correctly in client
-code. Our goal is to be able to detect errors like those encountered in figure~\ref{code:broken}
-before the program is executed, providing programmers with assurance that invocations will succeed.
-
+Figures~\ref{code:broken} and~\ref{fig:algo} show how these features can be used
+in Julia code to provide for untyped object oriented programming. 
 
 \begin{figure}
 
@@ -155,7 +137,7 @@ Closest candidates are:
 \begin{align*}
 t ::=~& n ~|~ \any\\
 d ::=~& \abstype{n}{t} ~|~ \contype{n}{t} \\
-  & |~ m(a~::~t, ~\ldots) = e\\
+  & |~ \m{m}{\oftype{a}{t}, ~\ldots} = e\\
 e ::=~& x ~|~ \xt{new} ~ n(e,~\ldots) ~|~ m(e,~\ldots) \\
 \end{align*}
 \caption{Static synatx of \jolt}
@@ -172,10 +154,14 @@ object creation, and method invocation.
 
 \begin{figure}
 \begin{mathpar}
-\inferrule*[lab={\tiny TAbs}]{ }{ }
+\inferrule*[lab={\tiny TAbsSelf}]{ }{ \m{m}{\ldots, \oftype{a}{A}, \ldots} \in \usable{A} }
 
-\inferrule*[lab={\tiny TCon}]{ }{ \OK{\contype{C}{t}} }
+\inferrule*[lab={\tiny TConSelf}]{ }{ \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C} }
+
+\inferrule*[lab={\tiny TAbsChild}]{\forall\,C <: A: \m{m}{\ldots} \in \usable{C}\\ \forall\,A' <: A: \m{m}{\ldots} \in \usable{A'}}{ \m{m}{\ldots} \in \usable{A} }
+
 \end{mathpar}
+\caption{LALALA}
 \end{figure}
 \bibliographystyle{plain}
 \bibliography{main}
