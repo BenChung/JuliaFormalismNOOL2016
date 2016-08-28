@@ -1,7 +1,7 @@
 \documentclass[preprint]{sigplanconf}
 \usepackage{xspace,url,subfigure,framed,amssymb,
             amsmath,mathpartir,hyperref,
-            stmaryrd, graphicx, fancyvrb % double brackets llbracket
+            stmaryrd, graphicx, fancyvrb, stmaryrd % double brackets llbracket
 }
 
 \usepackage[T1]{fontenc}
@@ -43,8 +43,8 @@
 \newcommand{\contype}[2]{\xt{type}~#1 <: #2}
 \newcommand{\any}{\xt{any}}
 
-\newcommand{\exact}[1]{\M{\llbracket #1 \rrbracket_{\xt{exact}}}}
-\newcommand{\usable}[1]{\M{\llbracket #1 \rrbracket_{\xt{usable}}}}
+\newcommand{\exact}[1]{{\llbracket #1 \rrbracket_{\xt{exact}}}}
+\newcommand{\usable}[1]{{\llbracket #1 \rrbracket_{\xt{usable}}}}
 
 
 \conferenceinfo{NOOL '16}{Month d--d, 20yy, City, ST, Country} 
@@ -150,12 +150,13 @@ e ::=~& x ~|~ \xt{new} ~ n(e,~\ldots) ~|~ m(e,~\ldots) \\
 \caption{LALALA}
 \end{figure}
 
+% \usable{A} \equiv \exact{A} \cup 
+%	\bigcap_{C <: A} \usable{C} 
+%	\bigcap_{A' <: A} \usable{A'}
+
 \begin{figure}
 \begin{mathpar}
-\inferrule*[lab={\tiny TAbs}]{ \real{A} \cup 
-	\bigcap_{C <: A} \usable{C} 
-	\bigcap_{A' <: A} \usable{A'} 
-	\cap \usable{\any} = A}{ \OK{\abstype{A}{t}} }
+\inferrule*[lab={\tiny TAbs}]{ }{ }
 
 \inferrule*[lab={\tiny TCon}]{ }{ \OK{\contype{C}{t}} }
 \end{mathpar}
