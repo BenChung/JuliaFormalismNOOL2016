@@ -10,6 +10,6 @@ function problem(arg::A1)
   return example(arg)
 end
 
-problem(C1()) #Hello
-problem(C2()) #World
-problem(C3()) #error
+problem(C1()) # Hello
+problem(C2()) # World
+problem(C3()) # error

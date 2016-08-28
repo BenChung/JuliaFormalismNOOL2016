@@ -42,6 +42,7 @@
 \newcommand{\oftype}[2]{#1~::~#2}
 \newcommand{\contype}[2]{\xt{type}~#1 <: #2}
 \newcommand{\any}{\xt{any}}
+\newcommand{\jolt}{\xt{JOLT}}
 
 \newcommand{\exact}[1]{{\llbracket #1 \rrbracket_{\xt{exact}}}}
 \newcommand{\usable}[1]{{\llbracket #1 \rrbracket_{\xt{usable}}}}
@@ -52,10 +53,20 @@
 \copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
 \copyrightdoi{nnnnnnn.nnnnnnn}
 \begin{document}
-\title{Bottom Up Objects - Static Typing Without Types} 
+\title{Bottom-up Objects - Static Typing Without Types} 
 \authorinfo{Benjamin Chung \and Paley Li \and Jan Vitek}{Northeastern University}{bchung@ccs.neu.edu \and \{pa.li,j.vitek\}@neu.edu} % Annon : Benjamin Chung, Jan Vitek}{Northeastern University}{}
 \maketitle
 % We should probably have some more introductory/motivational material herezies
+
+\begin{abstract}
+TODO:
+\begin{itemize}
+\item Julia has interesting inheritance mechanism, but it's completely dynamic.
+\item What we purpose: using statically type check to allow more complex inheritance structure and bring static error messages for inheritance structure to Julia.
+\item We formalised our ideas in JOLT, a minimal subset of Julia.
+\end{itemize}
+\end{abstract}
+
 
 \begin{figure}
 \centering
@@ -134,11 +145,11 @@ ERROR: MethodError: no method matching example(::C3)
 Closest candidates are:
   example(::C1)
 \end{Verbatim}
-\caption{LALALA}
+\caption{Object inheritance in Julia}
 \label{code:broken}
 \end{figure}
 
- \newpage
+\newpage
 
 \begin{figure}
 \begin{align*}
@@ -147,8 +158,13 @@ d ::=~& \abstype{n}{t} ~|~ \contype{n}{t} \\
   & |~ m(a~::~t, ~\ldots) = e\\
 e ::=~& x ~|~ \xt{new} ~ n(e,~\ldots) ~|~ m(e,~\ldots) \\
 \end{align*}
-\caption{LALALA}
+\caption{Static synatx of \jolt}
+\label{fm:syntax}
 \end{figure}
+
+\jolt\space is a minimal formalism of a small subset of Julia. In figure~\ref{fm:syntax}, we present the synatx of \jolt.
+Types (\xt{t}) in \jolt\space are either a name or the \any\space keyword. The expressions (\xt{e}) in \jolt\space only include varibles, 
+object creation, and method invocation.
 
 % \usable{A} \equiv \exact{A} \cup 
 %	\bigcap_{C <: A} \usable{C} 
