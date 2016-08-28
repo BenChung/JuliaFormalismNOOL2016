@@ -8,16 +8,13 @@ digraph G {
 		C_1 [label = <<table border="0" cellspacing="0">
                     <tr><td width="50"  port="port1" border="1">C<SUB>1</SUB></td></tr>
                     <tr><td width="50" border="1">a</td></tr>
-                    <tr><td width="50" border="1">b</td></tr>
                 </table>>]; 
 		C_2 [label = <<table border="0" cellspacing="0">
                     <tr><td width="50"  port="port1" border="1">C<SUB>2</SUB></td></tr>
-                    <tr><td width="50" border="1">b</td></tr>
+                    <tr><td width="50" border="1">a</td></tr>
                 </table>>];}
 	{rank=sink; C_3 [label = <<table border="0" cellspacing="0">
                     <tr><td width="50"  port="port1" border="1">C<SUB>3</SUB></td></tr>
-                    <tr><td width="50" border="1">b</td></tr>
-                    <tr><td width="50" border="1">c</td></tr>
                 </table>>];}
 	node [shape="Mrecord"];
 	A_2 [ label = <<table border="0" cellspacing="0">

@@ -4,10 +4,10 @@ type C2 <: A1 end
 abstract A2 <: A1
 type C3 <: A2 end
 
-function example(arg::C1) print("Hello ") end
-function example(arg::C2) print("World\n") end
+function a(arg::C1) print("Hello ") end
+function a(arg::C2) print("World\n") end
 function problem(arg::A1)
-  return example(arg)
+  return a(arg)
 end
 
 problem(C1()) # Hello

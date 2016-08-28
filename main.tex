@@ -48,6 +48,7 @@
 \newcommand{\exact}[1]{{\llbracket #1 \rrbracket_{\xt{exact}}}}
 \newcommand{\usable}[1]{{\llbracket #1 \rrbracket_{\xt{}}}}
 \renewcommand{\ldots}{...}
+\newcommand{\cnum}[2]{$\text{#1}_#2$}
 
 
 \conferenceinfo{NOOL '16}{Month d--d, 20yy, City, ST, Country} 
@@ -69,13 +70,6 @@ TODO:
 \end{itemize}
 \end{abstract}
 
-
-\begin{figure}
-\centering
-\includegraphics[scale=.6]{example2.pdf}
-\caption{LALALALA}
-\label{fig:algo}
-\end{figure}
 
 \section{Introduction}
 
@@ -99,6 +93,27 @@ R or Matlab, and has a number of features designed
 to support numeric computation and other tasks common
 in scientific work.
 
+\begin{figure}[h]
+
+\lstinputlisting[language=Julia]{broken.jl}
+\begin{Verbatim}[fontsize=\small]
+ERROR: MethodError: no method matching a(::C3)
+Closest candidates are:
+  a(::C1)
+  a(::C2)
+\end{Verbatim}
+\caption{Object inheritance in Julia}
+\label{code:broken}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[scale=.6]{example2.pdf}
+\caption{LALALALA}
+\label{fig:algo}
+\end{figure}
+
 \section{Julia}
 
 From the perspective of object systems, Julia has several interesting features:
@@ -116,22 +131,48 @@ define no explicit methods, relying on ``a collection of informal interfaces''
 \cite{juliadocu} to abstract over implementations.
 \end{itemize}
 
-Figures~\ref{code:broken} and~\ref{fig:algo} show how these features can be used
-in Julia code to provide for untyped object oriented programming. 
+Figure~\ref{code:broken} provides an illustration of how these features 
+interact, and how they can be used to do untyped object-oriented programming.
+The figure begins by constructing the object heirarchy shown in figure~
+\ref{fig:algo}, then adds the method \xt{a} to the concrete classes $\text{C}_1$ and
+$\text{C}_2$. The last function definition adds a function \xt{problem} to the
+program, which calls the function \xt{a} on an argument of type $\text{A}_1$.
 
-\begin{figure}
+The next step is to actually call the methods we have defined. Julia performs
+dispatch by looking for the \emph{most specific method} whose arguments are
+satisfied by the given value - in essence, giving us a type guarantee that the
+argument will always be of the declared type. In this way, the implementation 
+of \xt{a} on line 7 is called when we call \xt{a} with an instance of $\text{C}_1$,
+and the implementation of \xt{a} on line 8 is called for $\text{C}_2$.
 
-\lstinputlisting[language=Julia]{broken.jl}
-\begin{Verbatim}[fontsize=\small]
-ERROR: MethodError: no method matching example(::C3)
-Closest candidates are:
-  example(::C1)
-\end{Verbatim}
-\caption{Object inheritance in Julia}
-\label{code:broken}
-\end{figure}
+However, the unchecked nature of Julia interfaces becomes apparent when we consider
+$\text{A}_2$ and $\text{C}_3$. \cnum{C}{3} has no $\xt{a}$ implementation, and
+therefore, despite being a subtype of \cnum{A}{1} 
+(transitively, through \cnum{A}{2}), a call to \xt{a} with an instance of \cnum{C}{3}
+fails with the error that no implementation of $\xt{a}$ exists for \cnum{C}{3}.
 
-\newpage
+This problem is easy to spot in this example, because all of the type defintions
+are simple and in the same place. However, in a real Julia program, types can be
+imported from other files and exist in much larger heirarchies than the one seen
+here. As a result, errors where a functional interface is violated by a library
+are possible, and can be difficult to detect ahead of time.
+
+\section{\jolt}
+An interesting observation about the issue identified in figure~\ref{code:broken}
+is that it can be seen as a ``message not understood'' error, exactly the kind
+that type systems are widely applied to detect and prevent. However, untyped 
+languages are uniquely difficult to type, as complex inference is typically
+required and the idioms are difficult to track with types.
+
+Despite being untyped, however, as mentioned previously Julia has a considerable
+number of types, though they are not used statically. We propose a type system
+for \emph{existing} Julia code that is able to statically detect the functional
+interfaces that are implicit in Julia type heirarchies and method definitions,
+and propose that this system can prevent ``method not found'' errors.
+
+As Julia provides a complex and rich type system in conjunction with a moderately
+complex syntax, we will be considering a heavily paired down version that we
+call \jolt.
 
 \begin{figure}
 \begin{align*}
@@ -158,7 +199,10 @@ object creation, and method invocation.
 
 \inferrule*[lab={\tiny TConSelf}]{ }{ \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C} }
 
-\inferrule*[lab={\tiny TAbsChild}]{\forall\,C <: A: \m{m}{\ldots} \in \usable{C}\\ \forall\,A' <: A: \m{m}{\ldots} \in \usable{A'}}{ \m{m}{\ldots} \in \usable{A} }
+\inferrule*[lab={\tiny TAbsChild}]{
+	\forall\,C <: A: \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C}\\ 
+	\forall\,A' <: A: \m{m}{\ldots, \oftype{a}{A'}, \ldots} \in \usable{A'}}
+{ \m{m}{\ldots, \oftype{a}{A}, \ldots} \in \usable{A} }
 
 \end{mathpar}
 \caption{LALALA}
