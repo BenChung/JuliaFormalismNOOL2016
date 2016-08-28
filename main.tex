@@ -40,7 +40,7 @@
 \newcommand{\OK}[1]{#1\;\text{OK}}
 \newcommand{\abstype}[2]{\xt{abstract}~#1 <: #2}
 \newcommand{\oftype}[2]{#1~::~#2}
-\newcommand{\contype}[3]{\xt{type}~#1 <: #2~\{ #3 \}}
+\newcommand{\contype}[2]{\xt{type}~#1 <: #2}
 
 
 \conferenceinfo{NOOL '16}{Month d--d, 20yy, City, ST, Country} 
@@ -138,12 +138,12 @@ Closest candidates are:
 
 \begin{figure}
 \begin{align*}
-\tau ::=~& \xt{abstract}~n <: t~\{~m(a~::~t,~\ldots),~\ldots~\} ~|~ \xt{type}~n\\
+\tau ::=~& \xt{abstract}~n <: t~\{~m(a~::~t,~\ldots),~\ldots~\} ~|~ \xt{type}~n <: t\\
 \Gamma ::=~& \tau,~\Gamma ~|~ \cdot\\
 t ::=~& n ~|~ \xt{any}\\
-d ::=~& \abstype{n}{t} ~|~ \contype{n}{t}{\oftype{f}{t}, ~\ldots} \\
+d ::=~& \abstype{n}{t} ~|~ \contype{n}{t} \\
   & |~ m(a~::~t, ~\ldots) = e\\
-e ::=~& x ~|~ \xt{new} ~ n(e,~\ldots) ~|~ m(e,~\ldots) ~|~ e.f ~|~ e.f = e \\
+e ::=~& x ~|~ \xt{new} ~ n(e,~\ldots) ~|~ m(e,~\ldots) \\
 \end{align*}
 \caption{LALALA}
 \end{figure}
@@ -152,7 +152,7 @@ e ::=~& x ~|~ \xt{new} ~ n(e,~\ldots) ~|~ m(e,~\ldots) ~|~ e.f ~|~ e.f = e \\
 \begin{mathpar}
 \inferrule*[lab={\tiny TAbs}]{ \bigcap_{C <: A} C \bigcap_{A' <: A} A' \cap \top = A}{ \OK{\abstype{A}{t}} }
 
-\inferrule*[lab={\tiny TCon}]{ }{ \OK{\contype{C}{t}{\oftype{f}{t}, ~\ldots}} }
+\inferrule*[lab={\tiny TCon}]{ }{ \OK{\contype{C}{t}} }
 \end{mathpar}
 \end{figure}
 \bibliographystyle{plain}
