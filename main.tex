@@ -1,7 +1,6 @@
 \documentclass[preprint]{sigplanconf}
-\usepackage{xspace,url,subfigure,framed,amssymb,
-            amsmath,mathpartir,hyperref,
-            stmaryrd, graphicx, fancyvrb, stmaryrd % double brackets llbracket
+\usepackage{xspace,url,subfigure,,framed,
+            hyperref, graphicx, fancyvrb % double brackets llbracket
 }
 
 \usepackage[T1]{fontenc}
@@ -9,6 +8,7 @@
 \usepackage{listings}
 \usepackage{textcomp}
 \usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{amsmath}
 
 \lstdefinelanguage{Julia}%
   {morekeywords={abstract,break,case,catch,const,continue,do,else,elseif,%
@@ -51,6 +51,9 @@
 \renewcommand{\ldots}{...}
 \newcommand{\cnum}[2]{$\text{#1}_#2$}
 
+\usepackage{stmaryrd}
+\usepackage{amssymb}
+\usepackage{mathpartir}
 
 \conferenceinfo{NOOL '16}{Month d--d, 20yy, City, ST, Country} 
 \copyrightyear{20yy}
@@ -188,8 +191,11 @@ e ::=~& x ~|~ \xt{new} ~ C() ~|~ m(e,~\ldots) \\
 \end{figure}
 
 \jolt\space is a minimal formalism of a small subset of Julia. In figure~\ref{fm:syntax}, we present the synatx of \jolt.
-Types (\xt{t}) in \jolt\space are either a name or the \any\space keyword, while the expressions (\xt{e}) include varibles, 
-object creation, and method invocation. The declarations of \jolt\space contain the most important aspect 
+Types (\xt{t}) in \jolt\space are either a name of an abstract type (\xt{A}) or a concrete type (\xt{C}), 
+or the \any\space keyword, while the expressions (\xt{e}) include varibles, object creation, and method invocation. 
+The declarations of \jolt\space consists of abstract type, concrete type, and method definition. 
+
+The declarations is probably the most important part, since 
 
 % \usable{A} \equiv \exact{A} \cup 
 %	\bigcap_{C <: A} \usable{C} 
@@ -212,14 +218,16 @@ object creation, and method invocation. The declarations of \jolt\space contain 
 
 
 
-\begin{quote}{\bf Lemma: } .
+\begin{quote}{\bf Lemma: } Type soundness.
 
  {\bf If:} \\
-   {\bf (a)}  
-   {\bf (b)}  
-  
+   {\bf (a)} (Progress) \\
+   {\bf (b)} (Preservation) \\  
+   {\bf (c)} (Inheritance structural correctness) \\
+   {\bf (d)} (Implementation structural correctness) \\
+ 
  {\bf then:}\\
-   {\bf (c)} 
+   {\bf (e)} (Soundness)
 \end{quote}
 
 
