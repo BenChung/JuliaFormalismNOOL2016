@@ -4,9 +4,10 @@
             stmaryrd, graphicx, fancyvrb, stmaryrd % double brackets llbracket
 }
 
-\usepackage[T1]{fontenc}
-%\usepackage{beramono}
+% \usepackage[T1]{fontenc}
+\usepackage{beramono}
 \usepackage{listings}
+\usepackage{textcomp}
 \usepackage[usenames,dvipsnames]{xcolor}
 
 \lstdefinelanguage{Julia}%
@@ -186,8 +187,8 @@ e ::=~& x ~|~ \xt{new} ~ C() ~|~ m(e,~\ldots) \\
 \end{figure}
 
 \jolt\space is a minimal formalism of a small subset of Julia. In figure~\ref{fm:syntax}, we present the synatx of \jolt.
-Types (\xt{t}) in \jolt\space are either a name or the \any\space keyword. The expressions (\xt{e}) in \jolt\space only include varibles, 
-object creation, and method invocation.
+Types (\xt{t}) in \jolt\space are either a name or the \any\space keyword, while the expressions (\xt{e}) include varibles, 
+object creation, and method invocation. The declarations of \jolt\space contain the most important aspect 
 
 % \usable{A} \equiv \exact{A} \cup 
 %	\bigcap_{C <: A} \usable{C} 
@@ -207,6 +208,21 @@ object creation, and method invocation.
 \end{mathpar}
 \caption{Well-formedness of $\usable{A}$}
 \end{figure}
+
+
+
+\begin{quote}{\bf Lemma: } .
+
+ {\bf If:} \\
+   {\bf (a)}  
+   {\bf (b)}  
+  
+ {\bf then:}\\
+   {\bf (c)} 
+\end{quote}
+
+
+
 \bibliographystyle{plain}
 \bibliography{main}
 \end{document}
