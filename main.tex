@@ -4,7 +4,7 @@
             stmaryrd, graphicx, fancyvrb, stmaryrd % double brackets llbracket
 }
 
-% \usepackage[T1]{fontenc}
+\usepackage[T1]{fontenc}
 \usepackage{beramono}
 \usepackage{listings}
 \usepackage{textcomp}
@@ -63,12 +63,13 @@
 % We should probably have some more introductory/motivational material herezies
 
 \begin{abstract}
-TODO:
-\begin{itemize}
-\item Julia has interesting inheritance mechanism, but it's completely dynamic.
-\item What we purpose: using statically type check to allow more complex inheritance structure and bring static error messages for inheritance structure to Julia.
-\item We formalised our ideas in JOLT, a minimal subset of Julia.
-\end{itemize}
+Julia is an untyped programming language designed for scientific computing. 
+Despite being untyped, however, Julia provides a rich type systems with a form 
+of inheritance, all resolved at runtime. As the language has no mechanism to 
+enforce functional interfaces, Julia programs can go wrong because of improper
+assumptions about an untyped interface. We propose a static type system for a 
+subset of Julia, called \jolt, that can rule out functional interface mismatches
+with no syntactic alteration to the Julia core.
 \end{abstract}
 
 
