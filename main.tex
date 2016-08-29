@@ -9,6 +9,9 @@
 \usepackage{listings}
 \usepackage[usenames,dvipsnames]{xcolor}
 
+\DeclareSymbolFont{legacymaths}{OT1}{cmr}{m}{n}
+\SetSymbolFont{legacymaths}{bold}{OT1}{cmr}{bx}{n}
+
 \lstdefinelanguage{Julia}%
   {morekeywords={abstract,break,case,catch,const,continue,do,else,elseif,%
       end,export,false,for,function,immutable,import,importall,if,in,%
@@ -110,7 +113,7 @@ Closest candidates are:
 \begin{figure}
 \centering
 \includegraphics[scale=.6]{example2.pdf}
-\caption{LALALALA}
+\caption{Inheritance heirarchy for figure~\ref{code:broken}}
 \label{fig:algo}
 \end{figure}
 
@@ -205,7 +208,7 @@ object creation, and method invocation.
 { \m{m}{\ldots, \oftype{a}{A}, \ldots} \in \usable{A} }
 
 \end{mathpar}
-\caption{LALALA}
+\caption{Well-formedness of $\usable{A}$}
 \end{figure}
 \bibliographystyle{plain}
 \bibliography{main}
