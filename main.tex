@@ -42,7 +42,7 @@
 \newcommand{\abstype}[2]{\xt{abstract}~#1 <: #2}
 \newcommand{\oftype}[2]{#1\,::\,#2}
 \newcommand{\m}[2]{{#1}(#2)}
-\newcommand{\contype}[2]{\xt{type}~#1 <: #2}
+\newcommand{\contype}[2]{\xt{type}~#1 <: #2}	
 \newcommand{\any}{\xt{any}}
 \newcommand{\jolt}{\xt{JOLT}}
 
@@ -230,7 +230,20 @@ The declarations is probably the most important part, since
    {\bf (e)} (Soundness)
 \end{quote}
 
+\section{Conclusion}
 
+Julia provides an interesting alternative perspective on functional interface 
+definition, where the set of methods that is expected for an interface is 
+defined solely by the concrete implementations of that interface. Despite being
+untyped, this property allows us to reason statically about the interface 
+hierarchy of Julia, an approach we have demonstrated in \jolt, a minimal subset
+of Julia, where we use it to show a path towards static type checking for safe
+method calls.
+
+Our approach centers on the typed runtime of Julia, which has the potential to
+provide the basis for other static analyses, which could be used to help inform
+new language features, such as purity. Types are already extensively used within
+Julia code, and considerable potential for future work exists in leveraging them.
 
 \bibliographystyle{plain}
 \bibliography{main}
