@@ -157,6 +157,12 @@ imported from other files and exist in much larger hierarchies than the one seen
 here. As a result, errors where a functional interface is violated by a library
 are possible, and can be difficult to detect ahead of time.
 
+Real Julia programs do have a lot of statically available information, however.
+Julia programmers add a lot of types to their functions, associating the functions
+with the types that they can work with. We can use this information to statically
+built interfaces from the bottom up - taking the implementations and inferring the
+interface that they all share.
+
 \section{\jolt}
 An interesting observation about the issue identified in figure~\ref{code:broken}
 is that it can be seen as a ``message not understood'' error, exactly the kind
@@ -229,6 +235,13 @@ One of the more interesting and unique
  {\bf then:}\\
    {\bf (e)} (Soundness)
 \end{quote}
+
+The key to the implementation of this static type system is computing the 
+enclosure relation to satisfy the requirements laid out in figure~\ref{fm:methInc}.
+We propose the trivial approach, where the methods that are enclosed in some
+abstract type $A$ are computed by taking the intersection of all abstract subtypes
+$A'$ and concrete subtypes $C$, unioned with the methods that are defined for $A$
+itself. 
 
 \section{Conclusion}
 
