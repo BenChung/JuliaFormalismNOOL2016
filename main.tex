@@ -66,11 +66,11 @@
 % We should probably have some more introductory/motivational material herezies
 
 \begin{abstract}
-Julia is an untyped functional(?)/object-oriented(?) programming language designed for scientific computing. 
+Julia is an untyped imperative programming language designed for scientific computing. 
 Despite being untyped, however, Julia provides a rich runtime type systems that includes features such as  
-inheritance. As the language has no mechanism to enforce functional/structural(?) interfaces, Julia programs 
+inheritance. As the language has no mechanism to enforce functional interfaces, Julia programs 
 are subjective to improper assumptions about an untyped interface. We propose a static type system for a 
-subset of Julia, called \jolt, that rules out functional/structural(?) interface mismatches
+subset of Julia, called \jolt, that rules out functional interface mismatches
 with no syntactic alteration to the core of Julia.
 \end{abstract}
 
@@ -78,13 +78,13 @@ with no syntactic alteration to the core of Julia.
 \section{Introduction}
 
 Traditional statically typed object-oriented languages have a series of
-common idioms: single dispatch[\textcolor{red}{cite}], figuring out which method
-to use in which situation, interfaces[\textcolor{red}{cite}], abstracting over 
+common idioms: single dispatch~\cite{jls}, figuring out which method
+to use in which situation, interfaces~\cite{objinter, fj}, abstracting over 
 common means of access, and the means to statically
-ensure that those interfaces are adhered to with the correct dispatch call[\textcolor{red}{cite}].
+ensure that those interfaces are adhered to with the correct dispatch call.
 
 These practices are perfectly suitable for many contexts,
-as is demonstrated by the success of [\textcolor{red}{name and cite these langauges}].
+as is demonstrated by the success of Java~\cite{jls}, C\#~\cite{csls}, and C++~\cite{cppls}, 
 These features are not universally applicable, however, some languages that do not have these features
 can still use object abstraction to retain static safety[\textcolor{red}{cite}].
 
