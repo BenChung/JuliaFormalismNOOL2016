@@ -77,25 +77,22 @@ with no syntactic alteration to the core of Julia.
 
 \section{Introduction}
 
-Traditional typed object-oriented languages have a series of
-common idioms: single dispatch, to figure out which method
-to use in which situation, interfaces, to abstract over 
+Traditional statically typed object-oriented languages have a series of
+common idioms: single dispatch[\textcolor{red}{cite}], figuring out which method
+to use in which situation, interfaces[\textcolor{red}{cite}], abstracting over 
 common means of access, and the means to statically
-ensure that those interfaces are adhered to.
+ensure that those interfaces are adhered to with the correct dispatch call[\textcolor{red}{cite}].
 
 These practices are perfectly suitable for many contexts,
-as is demonstrated by the success of langauges that have 
-these features, but are not universally applicable, and
-other languages that do not have any of these features
-can use the object abstraction while retaining static 
-safety.
+as is demonstrated by the success of [\textcolor{red}{name and cite these langauges}].
+These features are not universally applicable, however, some languages that do not have these features
+can still use object abstraction to retain static safety.
 
-In this paper, we will be talking about the Julia
-programming language. Julia was originally designed
-as a scientific computing language, in the vein of 
-R or Matlab, and has a number of features designed
-to support numeric computation and other tasks common
-in scientific work.
+Julia is one such programming language, as it provides multi-method dispatch 
+and an interface system that focuses on an abstract struct-like construct. 
+Julia was originally designed for the purpose of scientific compution, in the vein of 
+R or Matlab, as such contains a number of features designed specifically to support 
+numeric computation and other tasks common in scientific programs.
 
 \begin{figure}[h]
 
@@ -114,30 +111,29 @@ Closest candidates are:
 \begin{figure}
 \centering
 \includegraphics[scale=.6]{example2.pdf}
-\caption{Inheritance heirarchy for figure~\ref{code:broken}}
+\caption{Inheritance hierarchy for figure~\ref{code:broken}}
 \label{fig:algo}
 \end{figure}
 
 \section{Julia}
 
-From the perspective of object systems, Julia has several interesting features:
+From the perspective of an object-oriented paradigm, Julia has several interesting features:
 \begin{itemize}
 \item Julia is \emph{dynamically typed}, and has no mechanism for statically
 checking type correctness. However, as illustrated in figure~\ref{code:broken},
 Julia code has many types.
 \item The reason for all of these types is \emph{dispatch}. Julia provides 
-full multimethod dispatch based on \emph{runtime type tags}, letting programmers
+full multi-method dispatch based on \emph{runtime type tags}, letting programmers
 write code that is highly specified for a specific value.
-\item However, one of the odder properties of this system is that Julia does not
-allow explicit procedural interfaces, one of the key features of traditional 
-object systems. Instead, Julia's interfaces, called \emph{abstract types}, 
-define no explicit methods, relying on ``a collection of informal interfaces''
+\item Julia does not allow explicit procedural interfaces, a key feature of traditional 
+object systems. Julia's interfaces are called \emph{abstract types}, and they 
+define no explicit methods, instead, the abstract types rely upon ``a collection of informal interfaces''
 \cite{juliadocu} to abstract over implementations.
 \end{itemize}
 
 Figure~\ref{code:broken} provides an illustration of how these features 
 interact, and how they can be used to do untyped object-oriented programming.
-The figure begins by constructing the object heirarchy shown in figure~
+The figure begins by constructing the object hierarchy shown in figure~
 \ref{fig:algo}, then adds the method \xt{a} to the concrete classes $\text{C}_1$ and
 $\text{C}_2$. The last function definition adds a function \xt{problem} to the
 program, which calls the function \xt{a} on an argument of type $\text{A}_1$.
@@ -155,9 +151,9 @@ therefore, despite being a subtype of \cnum{A}{1}
 (transitively, through \cnum{A}{2}), a call to \xt{a} with an instance of \cnum{C}{3}
 fails with the error that no implementation of $\xt{a}$ exists for \cnum{C}{3}.
 
-This problem is easy to spot in this example, because all of the type defintions
+This problem is easy to spot in this example, because all of the type definitions
 are simple and in the same place. However, in a real Julia program, types can be
-imported from other files and exist in much larger heirarchies than the one seen
+imported from other files and exist in much larger hierarchies than the one seen
 here. As a result, errors where a functional interface is violated by a library
 are possible, and can be difficult to detect ahead of time.
 
@@ -171,12 +167,11 @@ required and the idioms are difficult to track with types.
 Despite being untyped, however, as mentioned previously Julia has a considerable
 number of types, though they are not used statically. We propose a type system
 for \emph{existing} Julia code that is able to statically detect the functional
-interfaces that are implicit in Julia type heirarchies and method definitions,
+interfaces that are implicit in Julia type hierarchies and method definitions,
 and propose that this system can prevent ``method not found'' errors.
 
 As Julia provides a complex and rich type system in conjunction with a moderately
-complex syntax, we will be considering a heavily paired down version that we
-call \jolt.
+complex syntax, we have constructed a heavily paired down version of Julia that we call \jolt.
 
 \begin{figure}
 \begin{align*}
@@ -185,16 +180,18 @@ d ::=~& \abstype{A}{t} ~|~ \contype{C}{t} \\
   & |~ \m{m}{\oftype{a}{t}, ~\ldots} = e\\
 e ::=~& x ~|~ \xt{new} ~ C() ~|~ m(e,~\ldots) \\
 \end{align*}
-\caption{Static synatx of \jolt}
+\caption{Static syntax of \jolt}
 \label{fm:syntax}
 \end{figure}
 
-\jolt\space is a minimal formalism of a small subset of Julia. In figure~\ref{fm:syntax}, we present the synatx of \jolt.
-Types (\xt{t}) in \jolt\space are either a name of an abstract type (\xt{A}) or a concrete type (\xt{C}), 
-or the \any\space keyword, while the expressions (\xt{e}) include varibles, object creation, and method invocation. 
-The declarations of \jolt\space consists of abstract type, concrete type, and method definition. 
+\jolt\space is a formalism of a minimal subset of Julia. In figure~\ref{fm:syntax}, we present the entire
+syntax of \jolt, which consists of types (\xt{t}), declarations (\xt{d}), and expressions (\xt{e}). 
+Types in \jolt\space are either a name, which can be the name of an abstract type (\xt{A}) or a concrete type (\xt{C}), 
+or the \any\space keyword, which denotes the top type - it's more like the dyn type. The declarations 
+of \jolt\space consists of declaring an abstract type, declaring a concrete type, and defining the body of a method.
+There are only three expressions in \jolt\space, and they are local variables, object creation, and method invocation. 
 
-The declarations is probably the most important part, since 
+
 
 % \usable{A} \equiv \exact{A} \cup 
 %	\bigcap_{C <: A} \usable{C} 
@@ -202,7 +199,7 @@ The declarations is probably the most important part, since
 
 \begin{figure}
 \begin{mathpar}
-\inferrule*[lab={\tiny TAbsSelf}]{ }{ \m{m}{\ldots, \oftype{a}{A}, \ldots} \in \usable{A} }
+\inferrule*[lab={\tiny TAbsSelf}]{\bot <: A}{ \m{m}{\ldots, \oftype{a}{A}, \ldots} \in \usable{A} }
 
 \inferrule*[lab={\tiny TConSelf}]{ }{ \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C} }
 
