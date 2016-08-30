@@ -86,12 +86,12 @@ ensure that those interfaces are adhered to with the correct dispatch call[\text
 These practices are perfectly suitable for many contexts,
 as is demonstrated by the success of [\textcolor{red}{name and cite these langauges}].
 These features are not universally applicable, however, some languages that do not have these features
-can still use object abstraction to retain static safety.
+can still use object abstraction to retain static safety[\textcolor{red}{cite}].
 
 Julia is one such programming language, as it provides multi-method dispatch 
 and an interface system that focuses on an abstract struct-like construct. 
 Julia was originally designed for the purpose of scientific compution, in the vein of 
-R or Matlab, as such contains a number of features designed specifically to support 
+R [\textcolor{red}{cite}]or Matlab[\textcolor{red}{cite}], as such contains a number of features designed specifically to support 
 numeric computation and other tasks common in scientific programs.
 
 \begin{figure}[h]
@@ -103,7 +103,7 @@ Closest candidates are:
   a(::C1)
   a(::C2)
 \end{Verbatim}
-\caption{Object inheritance in Julia}
+\caption{Object inheritance example in Julia.}
 \label{code:broken}
 \end{figure}
 
@@ -111,7 +111,7 @@ Closest candidates are:
 \begin{figure}
 \centering
 \includegraphics[scale=.6]{example2.pdf}
-\caption{Inheritance hierarchy for figure~\ref{code:broken}}
+\caption{Inheritance hierarchy diagram for figure~\ref{code:broken}.}
 \label{fig:algo}
 \end{figure}
 
@@ -180,43 +180,57 @@ d ::=~& \abstype{A}{t} ~|~ \contype{C}{t} \\
   & |~ \m{m}{\oftype{a}{t}, ~\ldots} = e\\
 e ::=~& x ~|~ \xt{new} ~ C() ~|~ m(e,~\ldots) \\
 \end{align*}
-\caption{Static syntax of \jolt}
+\caption{Static syntax for \jolt.}
 \label{fm:syntax}
 \end{figure}
 
-\jolt\space is a formalism of a minimal subset of Julia. In figure~\ref{fm:syntax}, we present the entire
-syntax of \jolt, which consists of types (\xt{t}), declarations (\xt{d}), and expressions (\xt{e}). 
+\jolt\space formalises a minimal subset of Julia. In figure~\ref{fm:syntax}, we present the entire
+syntax for \jolt, which consists of types (\xt{t}), declarations (\xt{d}), and expressions (\xt{e}). 
 Types in \jolt\space are either a name, which can be the name of an abstract type (\xt{A}) or a concrete type (\xt{C}), 
-or the \any\space keyword, which denotes the top type - it's more like the dyn type. The declarations 
+or the \any\space keyword, which denotes the top type. The declarations 
 of \jolt\space consists of declaring an abstract type, declaring a concrete type, and defining the body of a method.
-There are only three expressions in \jolt\space, and they are local variables, object creation, and method invocation. 
+The three expressions in \jolt\space are local variables, object creation, and method invocation. 
 
-
-
-% \usable{A} \equiv \exact{A} \cup 
-%	\bigcap_{C <: A} \usable{C} 
-%	\bigcap_{A' <: A} \usable{A'}
+Due to the concise nature of this formalise, the expression typing and operational semantics rules for \jolt has
+been omitted, as they are straightforward and does not offer much insight into the inheritance structure of Julia. 
+Instead, we will focus our attention to highlight how \jolt\space generates and ensures correctness of the inheritance
+hierarchy created from it's abstract and concrete types. 
 
 \begin{figure}
 \begin{mathpar}
-\inferrule*[lab={\tiny TAbsSelf}]{\bot <: A}{ \m{m}{\ldots, \oftype{a}{A}, \ldots} \in \usable{A} }
+\inferrule*[lab={\tiny TAbsSelf}]{ \m{m}{\ldots, \oftype{a}{A}, \ldots} \in \usable{A}}{ \m{m}{\ldots, \oftype{a}{A}, \ldots} \Subset A}
 
-\inferrule*[lab={\tiny TConSelf}]{ }{ \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C} }
+\inferrule*[lab={\tiny TConSelf}]{ \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C}}{ \m{m}{\ldots, \oftype{a}{C}, \ldots} \Subset C}
 
 \inferrule*[lab={\tiny TAbsChild}]{
-	\forall\,C <: A: \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C}\\ 
-	\forall\,A' <: A: \m{m}{\ldots, \oftype{a}{A'}, \ldots} \in \usable{A'}}
-{ \m{m}{\ldots,\oftype{a}{A}, \ldots} \in \usable{A} }
+	\forall\,C <: A: \m{m}{\ldots, \oftype{a}{C}, \ldots} \Subset C\\ 
+	\forall\,A' <: A: \m{m}{\ldots, \oftype{a}{A'}, \ldots} \Subset A'}
+{ \m{m}{\ldots,\oftype{a}{A}, \ldots} \Subset A}
 
 \end{mathpar}
-\caption{Method inclusion of types}
+\caption{Method enclosure over types.}
 \label{fm:methInc}
 \end{figure}
 
-The well-formedness of types, both abstract and concrete, is described using our method inclusion rules as shown in 
-figure~\ref{fm:methInc}
+In figure~\ref{fm:methInc}, we present the rules  .
 
-One of the more interesting and unique 
+The symbol $\in$ denotes the standard set notion for when an element is inside a set. For instance, the premise of the rule \textit{TAbsSelf}
+describes when the method \m{m}{\ldots, \oftype{a}{A}, \ldots} is inside the set described by the type \textit{A} ($\usable{A}$). 
+
+In \jolt, the method \textit{m} is an actual method 
+
+
+The symbol $\Subset$ denotes the enclosure of a method inside a type. For instance, the conclusion of the rule \textit{TAbsSelf} states
+that the method \m{m}{\ldots, \oftype{a}{A}, \ldots} is enclosed in the type \textit{A}
+
+if this method is enclosed inside all of it's subtype abstract type as well as all of it's associated concrete types 
+
+To show an abstract type is correct, we are is broken down into three parts. The first part shows the name of the abstract type is well-formed, 
+the second part shows each method in the abstract type is well-formed, and the final part shows every method in the abstract 
+type is enclosed within the abstract type. Similarly there are three parts for showing a concrete type is correct with respect to the definition
+of concrete types.
+
+\textcolor{red}{We haven't talked about the algorithms yet. I think we will need another diagram, one that is similar to figure 2, where it will describe something similar to figure 1 from before.}
 
 \begin{quote}{\bf Lemma: } Type soundness.
 
