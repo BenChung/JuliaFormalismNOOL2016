@@ -138,9 +138,8 @@ explicit methods, instead, the abstract types rely upon ``a collection of inform
 Figure~\ref{code:broken} provides an illustration of how these features 
 interact, and how they can be used to do untyped object-oriented programming.
 The figure begins by constructing the object hierarchy shown in figure~
-\ref{fig:algo}, then adds the method \xt{a} to the concrete classes $\text{C}_1$ and
-$\text{C}_2$. The last function definition adds a function \xt{problem} to the
-program, which calls the function \xt{a} on an argument of type $\text{A}_1$.
+\ref{fig:algo}, as well as a function \xt{problem}, which calls the function 
+\xt{a} on an argument of type $\text{A}_1$.
 
 The next step is to actually call the methods we have defined. Julia performs
 dispatch by looking for the \emph{most specific method} whose arguments are
@@ -150,25 +149,23 @@ of \xt{a} on line 7 is called when we call \xt{a} with an instance of $\text{C}_
 on line 13, and the implementation of \xt{a} on line 8 is called when 
 $\text{C}_2$ is passed on line 14.
 
-However, the unchecked nature of Julia interfaces becomes apparent when we consider
-$\text{A}_2$ and $\text{C}_3$. \cnum{C}{3} has no $\xt{a}$ implementation, and
-therefore, despite being a subtype of \cnum{A}{1} 
-(transitively, through \cnum{A}{2}), a call to \xt{a} with an instance of \cnum{C}{3}
-fails with the error that no implementation of $\xt{a}$ exists for \cnum{C}{3}.
+In this manner, and if we ignore \cum{C}{3} briefly, the programmer has 
+effectively built a functional interface - any \cnum{A}{1} will have an \xt{a} 
+method associated with it, and we can use \xt{a} on a \cnum{A}{1} with complete
+assurance that it will actually exist. As a result, we have built an interface
+by abstracting directly from the concrete implementations.
+
+However, the assumption that \xt{a} is always safe on a \cnum{A}{1} is not true
+in this actual program, once we add \cnum{C}{3} back in. Julia does not impose
+any constraints on the types in a program, so \cnum{C}{3} is both perfectly valid
+and lacks a \xt{a}. As a result, line 15 produced the listed error, despite 
+dispatch having chosen the most applicable method.
 
 This problem is easy to spot in this example, because all of the type definitions
 are simple and in the same place. However, in a real Julia program, types can be
 imported from other files and exist in much larger hierarchies than the one seen
 here. As a result, errors where a functional interface is violated by a library
 are possible, and can be difficult to detect ahead of time.
-
-The interface here was implicit - we expected there to be a method \xt{a} on the
-object under type \cnum{A}{1} because the implementations we knew about all had
-that method available, an assumption that was violated by \cnum{C}{3}. All Julia
-interfaces are constructed from the implementation up in this manner, with inheritance
-explicitly declared in the types. As a result, we propose a static bottom-up type
-system, leveraging the existing type information to discover information about the
-execution.
 
 \section{\jolt}
 An interesting observation about the issue identified in figure~\ref{code:broken}
@@ -265,7 +262,7 @@ The concept of creating interfaces for multi-method dispatching is not a new or 
 as Haskell's type classes \textcolor{red}{cite} and Rust's trait systems \textcolor{red}{cite} behaves similarly.
 In Rust, it is not possible to create infant traits (akin to concrete types) in classes outside where 
 the actual traits are defined. In \jolt, we would simply punt any concrete types implemented outside of it's
-assoicated abstract type to be received by the dynamic behaviour of Julia.
+associated abstract type to be received by the dynamic behavior of Julia.
 
 Our approach towards \jolt originated from the typed runtime of Julia, which has the potential to
 provide the basis for other static analyses. New language features, such as purity, has the possibility
