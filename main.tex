@@ -44,7 +44,7 @@
 \newcommand{\m}[2]{{#1}(#2)}
 \newcommand{\contype}[2]{\xt{type}~#1 <: #2}	
 \newcommand{\any}{\xt{any}}
-\newcommand{\jolt}{\xt{JOLT}}
+\newcommand{\jolt}{\xt{Jolt}}
 
 \newcommand{\exact}[1]{{\llbracket #1 \rrbracket_{\xt{exact}}}}
 \newcommand{\usable}[1]{{\llbracket #1 \rrbracket_{\xt{}}}}
@@ -60,7 +60,7 @@
 \copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
 \copyrightdoi{nnnnnnn.nnnnnnn}
 \begin{document}
-\title{Bottom-up Objects - Static Typing Without Types} 
+\title{Bottom-up Objects --- Static Typing Without Types} 
 \authorinfo{Benjamin Chung \and Paley Li \and Jan Vitek}{Northeastern University}{bchung@ccs.neu.edu \and \{pa.li,j.vitek\}@neu.edu} % Annon : Benjamin Chung, Jan Vitek}{Northeastern University}{}
 \maketitle
 % We should probably have some more introductory/motivational material herezies
@@ -219,35 +219,23 @@ hierarchy created from it's abstract and concrete types.
 \label{fm:methInc}
 \end{figure}
 
-In figure~\ref{fm:methInc}, we present the rules  .
-
-The symbol $\in$ denotes the standard set notion for when an element is inside a set. For instance, the premise of the rule \textit{TAbsSelf}
-describes that the method \m{m}{\ldots, \oftype{a}{A}, \ldots} is inside the set described by the type \textit{A} ($\usable{A}$). In \jolt,
-this means the method \textit{m} is syntactically defined for \textit{A}. The symbol $\Subset$ denotes a method being enclosed inside a type. 
+In figure~\ref{fm:methInc}, we present our rules for when methods are enclosed and/or inside a type.
+The symbol $\in$ denotes the standard set notion for an element being inside a set. In \jolt,
+this means the method is syntactically defined for the type it is in. The symbol $\Subset$ denotes a method being enclosed inside a type. 
 In \jolt, a method is enclosed in a type if that method exists in the inheritance hierarchy, but there might not necessarly exist an actual implementation
-of the method.
+of that method in the enclosing type. It is important to note the difference between $\Subset$ denoting the semantical relation of methods inside a type that represents it's place 
+on the inheritance structure, while $\in$ denoting when a method is syntactically defined for a type.
 
+The \textit{TAbsSelf} rule describes when an enclosing method is defined inside that type. 
+For concrete types, their enclosing methods are always defined inside themselves, as reflected by the \textit{TConSelf} rule.
+The \textit{TAbsChild} rule describes the case when an enclosing method in an abstract type 
+is not inside that abstract type, which means it's concrete types must have this method inside them
+and that all abstract types below this abstract must have this method enclosed within them.
 
-
-
-To show an abstract type is correct, we are is broken down into three parts. The first part shows the name of the abstract type is well-formed, 
-the second part shows each method in the abstract type is well-formed, and the final part shows every method in the abstract 
+To show an abstract type is correct requires to show three separate components. The first component shows the name of the abstract type is well-formed, 
+the second component shows each method in the abstract type is well-formed, and the final component shows every method in the abstract 
 type is enclosed within the abstract type. Similarly there are three parts for showing a concrete type is correct with respect to the definition
 of concrete types.
-
-\textcolor{red}{We haven't talked about the algorithms yet. I think we will need another diagram, one that is similar to figure 2, where it will describe something similar to figure 1 from before.}
-
-% \begin{quote}{\bf Lemma: } Type soundness.
-% 
-%  {\bf If:} \\
-%    {\bf (a)} (Progress) \\
-%    {\bf (b)} (Preservation) \\  
-%    {\bf (c)} (Inheritance structural correctness) \\
-%    {\bf (d)} (Implementation structural correctness) \\
-%  
-%  {\bf then:}\\
-%    {\bf (e)} (Soundness)
-% \end{quote}
 
 The key to the implementation of this static type system is computing the 
 enclosure relation to satisfy the requirements laid out in figure~\ref{fm:methInc}.
@@ -263,8 +251,11 @@ definition, whereby the methods of an interface are solely defined by
 the concrete implementations of that interface, instead of having the interface specifying
 the methods of it's concrete implementation. Despite being
 untyped, we are able to utilize this property to create and reason statically about an inheritance
-hierarchy within Julia. We demonstrate this approach in \jolt, a minimal subset
-of Julia. \jolt provides static type checking for safe calls of multi-method.
+hierarchy within Julia. We demonstrate this approach in \jolt\space, a minimal subset
+of Julia. \jolt\space provides static type checking for safe calls of multi-method.
+
+The concept of patching against multi-method is not a novel or new technqiue, concepts such 
+as Haskell's type classes and Rust's trait systems behaves similarly.
 
 Our approach towards \jolt originated from the typed runtime of Julia, which has the potential to
 provide the basis for other static analyses. New language features, such as purity, has the possibility
