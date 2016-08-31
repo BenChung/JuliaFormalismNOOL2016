@@ -254,8 +254,11 @@ untyped, we are able to utilize this property to create and reason statically ab
 hierarchy within Julia. We demonstrate this approach in \jolt\space, a minimal subset
 of Julia. \jolt\space provides static type checking for safe calls of multi-method.
 
-The concept of patching against multi-method is not a novel or new technqiue, concepts such 
-as Haskell's type classes and Rust's trait systems behaves similarly.
+The concept of creating interfaces for multi-method dispatching is not a new or novel, features such 
+as Haskell's type classes \textcolor{red}{cite} and Rust's trait systems \textcolor{red}{cite} behaves similarly.
+In Rust, it is not possible to create infant traits (akin to concrete types) in classes outside where 
+the actual traits are defined. In \jolt, we would simply punt any concrete types implemented outside of it's
+assoicated abstract type to be received by the dynamic behaviour of Julia.
 
 Our approach towards \jolt originated from the typed runtime of Julia, which has the potential to
 provide the basis for other static analyses. New language features, such as purity, has the possibility
