@@ -67,9 +67,9 @@
 
 \begin{abstract}
 Julia is an untyped imperative programming language designed for scientific computing. 
-Despite being untyped, however, Julia provides a rich runtime type systems that includes features such as  
-inheritance. As the language has no mechanism to enforce functional interfaces, Julia programs 
-are subjective to improper assumptions about an untyped interface. We propose a static type system for a 
+Despite being untyped, Julia provides a rich runtime type systems that includes features such as  
+inheritance, but without any mechanism for checking the correctness of the interfaces implied 
+through an inheritance hierarchy. We propose a static type system for a 
 subset of Julia, called \jolt, that rules out functional interface mismatches
 with no syntactic alteration to the core of Julia.
 \end{abstract}
