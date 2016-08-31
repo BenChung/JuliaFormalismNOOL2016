@@ -85,13 +85,15 @@ ensure that those interfaces are adhered to with the correct dispatch call.
 
 These practices are perfectly suitable for many contexts,
 as is demonstrated by the success of Java~\cite{jls}, C\#~\cite{csls}, and C++~\cite{cppls}, 
-These features are not universally applicable, however, some languages that do not have these features
-can still use object abstraction to retain static safety[\textcolor{red}{cite}].
+These features are not universally applicable, however. Some languages, including
+Javascript~\cite{ecma}, Lua~\cite{lualang}, and Julia~\cite{bezan} have no mechanism to define enforced
+interfaces, but have 
+
 
 Julia is one such programming language, as it provides multi-method dispatch 
 and an interface system that focuses on an abstract struct-like construct. 
 Julia was originally designed for the purpose of scientific compution, in the vein of 
-R [\textcolor{red}{cite}]or Matlab[\textcolor{red}{cite}], as such contains a number of features designed specifically to support 
+R or Matlab\cite{bezan}, as such contains a number of features designed specifically to support 
 numeric computation and other tasks common in scientific programs.
 
 \begin{figure}[h]
@@ -117,17 +119,19 @@ Closest candidates are:
 
 \section{Julia}
 
-From the perspective of an object-oriented paradigm, Julia has several interesting features:
+From the perspective of object-oriented language design, Julia has several 
+interesting features:
 \begin{itemize}
 \item Julia is \emph{dynamically typed}, and has no mechanism for statically
 checking type correctness. However, as illustrated in figure~\ref{code:broken},
 Julia code has many types.
 \item The reason for all of these types is \emph{dispatch}. Julia provides 
 full multi-method dispatch based on \emph{runtime type tags}, letting programmers
-write code that is highly specified for a specific value.
-\item Julia does not allow explicit procedural interfaces, a key feature of traditional 
-object systems. Julia's interfaces are called \emph{abstract types}, and they 
-define no explicit methods, instead, the abstract types rely upon ``a collection of informal interfaces''
+write code that is highly specified for a specific value. 
+\item Despite having types with methods that operate over them, Julia does not 
+allow explicit procedural interfaces, a key feature of traditional object 
+systems. Julia's interfaces are called \emph{abstract types}, and they define no 
+explicit methods, instead, the abstract types rely upon ``a collection of informal interfaces''
 \cite{juliadocu} to abstract over implementations.
 \end{itemize}
 
@@ -142,8 +146,9 @@ The next step is to actually call the methods we have defined. Julia performs
 dispatch by looking for the \emph{most specific method} whose arguments are
 satisfied by the given value - in essence, giving us a type guarantee that the
 argument will always be of the declared type. In this way, the implementation 
-of \xt{a} on line 7 is called when we call \xt{a} with an instance of $\text{C}_1$,
-and the implementation of \xt{a} on line 8 is called for $\text{C}_2$.
+of \xt{a} on line 7 is called when we call \xt{a} with an instance of $\text{C}_1$
+on line 13, and the implementation of \xt{a} on line 8 is called when 
+$\text{C}_2$ is passed on line 14.
 
 However, the unchecked nature of Julia interfaces becomes apparent when we consider
 $\text{A}_2$ and $\text{C}_3$. \cnum{C}{3} has no $\xt{a}$ implementation, and
@@ -157,11 +162,13 @@ imported from other files and exist in much larger hierarchies than the one seen
 here. As a result, errors where a functional interface is violated by a library
 are possible, and can be difficult to detect ahead of time.
 
-Real Julia programs do have a lot of statically available information, however.
-Julia programmers add a lot of types to their functions, associating the functions
-with the types that they can work with. We can use this information to statically
-built interfaces from the bottom up - taking the implementations and inferring the
-interface that they all share.
+The interface here was implicit - we expected there to be a method \xt{a} on the
+object under type \cnum{A}{1} because the implementations we knew about all had
+that method available, an assumption that was violated by \cnum{C}{3}. All Julia
+interfaces are constructed from the implementation up in this manner, with inheritance
+explicitly declared in the types. As a result, we propose a static bottom-up type
+system, leveraging the existing type information to discover information about the
+execution.
 
 \section{\jolt}
 An interesting observation about the issue identified in figure~\ref{code:broken}
@@ -176,7 +183,7 @@ for \emph{existing} Julia code that is able to statically detect the functional
 interfaces that are implicit in Julia type hierarchies and method definitions,
 and propose that this system can prevent ``method not found'' errors.
 
-As Julia provides a complex and rich type system in conjunction with a moderately
+Julia provides a complex and rich type system in conjunction with a moderately
 complex syntax, we have constructed a heavily paired down version of Julia that we call \jolt.
 
 \begin{figure}
@@ -198,9 +205,9 @@ or the \any\space keyword, which denotes the top type. The declarations
 of \jolt\space consists of declaring an abstract type, declaring a concrete type, and defining the body of a method.
 The three expressions in \jolt\space are local variables, object creation, and method invocation. 
 
-Due to the concise nature of this formalise, the expression typing and operational semantics rules for \jolt has
+Due to the concise nature of this formalism, the expression typing and operational semantics rules for \jolt have
 been omitted, as they are straightforward and does not offer much insight into the inheritance structure of Julia. 
-Instead, we will focus our attention to highlight how \jolt\space generates and ensures correctness of the inheritance
+Instead, we will focus our attention on highlighting how \jolt\space generates and ensures correctness of the inheritance
 hierarchy created from it's abstract and concrete types. 
 
 \begin{figure}
