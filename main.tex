@@ -175,8 +175,9 @@ complex syntax, we have constructed a heavily paired down version of Julia that 
 
 \begin{figure}
 \begin{align*}
-t ::=~& A ~|~ C ~|~ \any\\
-d ::=~& \abstype{A}{t} ~|~ \contype{C}{t} \\
+t ::=~&  C ~|~ s\\
+s ::=~& A ~|~ \any\\
+d ::=~& \abstype{A}{s} ~|~ \contype{C}{s} \\
   & |~ \m{m}{\oftype{a}{t}, ~\ldots} = e\\
 e ::=~& x ~|~ \xt{new} ~ C() ~|~ m(e,~\ldots) \\
 \end{align*}
@@ -203,7 +204,7 @@ hierarchy created from it's abstract and concrete types.
 \inferrule*[lab={\tiny TConSelf}]{ \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C}}{ \m{m}{\ldots, \oftype{a}{C}, \ldots} \Subset C}
 
 \inferrule*[lab={\tiny TAbsChild}]{
-	\forall\,C <: A: \m{m}{\ldots, \oftype{a}{C}, \ldots} \Subset C\\ 
+	\forall\,C <: A: \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C}\\ 
 	\forall\,A' <: A: \m{m}{\ldots, \oftype{a}{A'}, \ldots} \Subset A'}
 { \m{m}{\ldots,\oftype{a}{A}, \ldots} \Subset A}
 
@@ -215,15 +216,13 @@ hierarchy created from it's abstract and concrete types.
 In figure~\ref{fm:methInc}, we present the rules  .
 
 The symbol $\in$ denotes the standard set notion for when an element is inside a set. For instance, the premise of the rule \textit{TAbsSelf}
-describes when the method \m{m}{\ldots, \oftype{a}{A}, \ldots} is inside the set described by the type \textit{A} ($\usable{A}$). 
+describes that the method \m{m}{\ldots, \oftype{a}{A}, \ldots} is inside the set described by the type \textit{A} ($\usable{A}$). In \jolt,
+this means the method \textit{m} is syntactically defined for \textit{A}. The symbol $\Subset$ denotes a method being enclosed inside a type. 
+In \jolt, a method is enclosed in a type if that method exists in the inheritance hierarchy, but there might not necessarly exist an actual implementation
+of the method.
 
-In \jolt, the method \textit{m} is an actual method 
 
 
-The symbol $\Subset$ denotes the enclosure of a method inside a type. For instance, the conclusion of the rule \textit{TAbsSelf} states
-that the method \m{m}{\ldots, \oftype{a}{A}, \ldots} is enclosed in the type \textit{A}
-
-if this method is enclosed inside all of it's subtype abstract type as well as all of it's associated concrete types 
 
 To show an abstract type is correct, we are is broken down into three parts. The first part shows the name of the abstract type is well-formed, 
 the second part shows each method in the abstract type is well-formed, and the final part shows every method in the abstract 
@@ -232,17 +231,17 @@ of concrete types.
 
 \textcolor{red}{We haven't talked about the algorithms yet. I think we will need another diagram, one that is similar to figure 2, where it will describe something similar to figure 1 from before.}
 
-\begin{quote}{\bf Lemma: } Type soundness.
-
- {\bf If:} \\
-   {\bf (a)} (Progress) \\
-   {\bf (b)} (Preservation) \\  
-   {\bf (c)} (Inheritance structural correctness) \\
-   {\bf (d)} (Implementation structural correctness) \\
- 
- {\bf then:}\\
-   {\bf (e)} (Soundness)
-\end{quote}
+% \begin{quote}{\bf Lemma: } Type soundness.
+% 
+%  {\bf If:} \\
+%    {\bf (a)} (Progress) \\
+%    {\bf (b)} (Preservation) \\  
+%    {\bf (c)} (Inheritance structural correctness) \\
+%    {\bf (d)} (Implementation structural correctness) \\
+%  
+%  {\bf then:}\\
+%    {\bf (e)} (Soundness)
+% \end{quote}
 
 \section{Conclusion}
 
