@@ -92,7 +92,7 @@ interfaces, but have
 
 Julia is one such programming language, as it provides multi-method dispatch 
 and an interface system that focuses on an abstract struct-like construct. 
-Julia was originally designed for the purpose of scientific compution, in the vein of 
+Julia was originally designed for the purpose of scientific computation, in the vein of 
 R or Matlab\cite{bezan}, as such contains a number of features designed specifically to support 
 numeric computation and other tasks common in scientific programs.
 
@@ -198,7 +198,7 @@ e ::=~& x ~|~ \xt{new} ~ C() ~|~ m(e,~\ldots) \\
 \label{fm:syntax}
 \end{figure}
 
-\jolt\space formalises a minimal subset of Julia. In figure~\ref{fm:syntax}, we present the entire
+\jolt\space formalizes a minimal subset of Julia. In figure~\ref{fm:syntax}, we present the entire
 syntax for \jolt, which consists of types (\xt{t}), declarations (\xt{d}), and expressions (\xt{e}). 
 Types in \jolt\space are either a name, which can be the name of an abstract type (\xt{A}) or a concrete type (\xt{C}), 
 or the \any\space keyword, which denotes the top type. The declarations 
@@ -229,7 +229,7 @@ hierarchy created from it's abstract and concrete types.
 In figure~\ref{fm:methInc}, we present our rules for when methods are enclosed and/or inside a type.
 The symbol $\in$ denotes the standard set notion for an element being inside a set. In \jolt,
 this means the method is syntactically defined for the type it is in. The symbol $\Subset$ denotes a method being enclosed inside a type. 
-In \jolt, a method is enclosed in a type if that method exists in the inheritance hierarchy, but there might not necessarly exist an actual implementation
+In \jolt, a method is enclosed in a type if that method exists in the inheritance hierarchy, but there might not necessarily exist an actual implementation
 of that method in the enclosing type. It is important to note the difference between $\Subset$ denoting the semantical relation of methods inside a type that represents it's place 
 on the inheritance structure, while $\in$ denoting when a method is syntactically defined for a type.
 
@@ -239,17 +239,20 @@ The \textit{TAbsChild} rule describes the case when an enclosing method in an ab
 is not inside that abstract type, which means it's concrete types must have this method inside them
 and that all abstract types below this abstract must have this method enclosed within them.
 
-To show an abstract type is correct requires to show three separate components. The first component shows the name of the abstract type is well-formed, 
-the second component shows each method in the abstract type is well-formed, and the final component shows every method in the abstract 
-type is enclosed within the abstract type. Similarly there are three parts for showing a concrete type is correct with respect to the definition
-of concrete types.
+An abstract type is considered correct when three separate components are shown. The first component requires the name of the type to be well-formed, 
+the second component requires every method in the type to be well-formed, and the final component requires every method in the type to be enclosed within that type. 
+Three similar components are required to show a concrete type is correct.
 
 The key to the implementation of this static type system is computing the 
 enclosure relation to satisfy the requirements laid out in figure~\ref{fm:methInc}.
-We propose the trivial approach, where the methods that are enclosed in some
+We propose the straightforward approach, where methods enclosed in an
 abstract type $A$ are computed by taking the intersection of all abstract subtypes
-$A'$ and concrete subtypes $C$, unioned with the methods that are defined for $A$
+$A'$ and concrete subtypes $C$, and combined with the methods that are defined for $A$
 itself. 
+
+The duality between the 
+
+
 
 \section{Conclusion}
 
@@ -261,13 +264,14 @@ untyped, we are able to utilize this property to create and reason statically ab
 hierarchy within Julia. We demonstrate this approach in \jolt\space, a minimal subset
 of Julia. \jolt\space provides static type checking for safe calls of multi-method.
 
-The concept of creating interfaces for multi-method dispatching is not a new or novel, features such 
-as Haskell's type classes \textcolor{red}{cite} and Rust's trait systems \textcolor{red}{cite} behaves similarly.
-In Rust, it is not possible to create infant traits (akin to concrete types) in classes outside where 
-the actual traits are defined. In \jolt, we would simply punt any concrete types implemented outside of it's
-assoicated abstract type to be received by the dynamic behaviour of Julia.
+The concept of creating interfaces for multi-method dispatching is not novel, features such 
+as Haskell's type classes \textcolor{red}{[cite]} and Rust's trait systems \textcolor{red}{[cite]} behaves similarly.
+In Rust, it is not possible to create orphans (akin to concrete types defined outside the class
+whereby it's associated abstract type is defined), however, this is possible in Julia. 
+In the case of \jolt, any orphans follow the dynamic behavior of Julia, therefore no static guarantee would
+be provided for orphans.
 
-Our approach towards \jolt originated from the typed runtime of Julia, which has the potential to
+Our approach towards \jolt\space originated from the typed runtime of Julia, which has the potential to
 provide the basis for other static analyses. New language features, such as purity, has the possibility
 to be introduced in the future as types are already extensively used within Julia code.
 
