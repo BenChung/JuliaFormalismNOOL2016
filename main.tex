@@ -24,7 +24,7 @@
 
 \lstset{%\lstinputlisting[language=Octave]{BitXorMatrix.m}
     language         = Julia,
-    basicstyle       = \small\ttfamily,
+    basicstyle       = \scriptsize\ttfamily,
     keywordstyle     = \bfseries\color{blue},
     stringstyle      = \color{magenta},
     commentstyle     = \color{ForestGreen},
@@ -60,17 +60,16 @@
 \copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
 \copyrightdoi{nnnnnnn.nnnnnnn}
 \begin{document}
-\title{Static Typing Without Types --- Typing Inheritance from the Bottom Up} 
+\title{Static Typing Without Types --- Typed Inheritance from the Bottom Up} 
 \authorinfo{Benjamin Chung \and Paley Li \and Jan Vitek}{Northeastern University}{bchung@ccs.neu.edu \and \{pa.li,j.vitek\}@neu.edu} % Annon : Benjamin Chung, Jan Vitek}{Northeastern University}{}
 \maketitle
 % We should probably have some more introductory/motivational material herezies
 
 \begin{abstract}
 Julia is an untyped imperative programming language designed for scientific computing. 
-Despite being untyped, Julia provides a rich runtime type systems that includes features such as  
-inheritance, but without any mechanism for checking the correctness of the interfaces implied 
-through an inheritance hierarchy. We propose a static type system for a 
-subset of Julia, called \jolt, that rules out functional interface mismatches
+Despite being untyped, Julia provides a rich runtime type system that includes features such as  
+inheritance, but lacks mechanisms to ensure compliance with interfaces.
+We propose a static type system for a subset of Julia, called \jolt, that rules out functional interface mismatches
 with no syntactic alteration to the core of Julia.
 \end{abstract}
 
@@ -79,27 +78,21 @@ with no syntactic alteration to the core of Julia.
 
 Traditional statically typed object-oriented languages have a series of
 common idioms: single dispatch~\cite{jls}, figuring out which method
-to use in which situation, interfaces~\cite{objinter, fj}, abstracting over 
+to use in which situation, interfaces~\cite{objinter, fj}, to abstract over 
 common means of access, and the means to statically
 ensure that those interfaces are adhered to with the correct dispatch call.
 
 These practices are perfectly suitable for many contexts,
-as is demonstrated by the success of Java~\cite{jls}, C\#~\cite{csls}, and C++~\cite{cppls}, 
+as is demonstrated by the success of Java~\cite{jls}, C\#~\cite{csls}, and C++~\cite{cppls}, among others.
 These features are not universally applicable, however. Some languages, including
-Javascript~\cite{ecma}, Lua~\cite{lualang}, and Julia~\cite{bezan} have no mechanism to define enforced
-interfaces, but have 
-
-
-Julia is one such programming language, as it provides multi-method dispatch 
-and an interface system that focuses on an abstract struct-like construct. 
-Julia was originally designed for the purpose of scientific computation, in the vein of 
-R or Matlab\cite{bezan}, as such contains a number of features designed specifically to support 
-numeric computation and other tasks common in scientific programs.
+Javascript~\cite{ecma} and Lua~\cite{lualang} have no mechanism to define enforced
+interfaces, but commonly use documentation-defined interfaces to define behavior
+for classes of objects~\cite{lualang}.
 
 \begin{figure}[h]
 
 \lstinputlisting[language=Julia]{broken.jl}
-\begin{Verbatim}[fontsize=\small]
+\begin{Verbatim}[fontsize=\scriptsize]
 ERROR: MethodError: no method matching a(::C3)
 Closest candidates are:
   a(::C1)
@@ -110,12 +103,12 @@ Closest candidates are:
 \end{figure}
 
 
-\begin{figure}
-\centering
-\includegraphics[scale=.6]{example2.pdf}
-\caption{Inheritance hierarchy diagram for figure~\ref{code:broken}.}
-\label{fig:algo}
-\end{figure}
+Julia is one such programming language, as it provides multi-method dispatch 
+and an interface system that focuses on an abstract struct-like construct. 
+Julia was originally designed for the purpose of scientific computation, in the vein of 
+R or Matlab\cite{bezan}, as such contains a number of features designed specifically to support 
+numeric computation and other tasks common in scientific programs.
+
 
 \section{Julia}
 
@@ -132,9 +125,19 @@ write code that is highly specified for a specific value.
 allow explicit procedural interfaces, a key feature of traditional object 
 systems. Julia's interfaces are called \emph{abstract types}, and they define no 
 explicit methods, instead, the abstract types rely upon ``a collection of informal interfaces''
-\cite{juliadocu} to abstract over implementations.
+\cite{juliadocu} to abstract over implementations. 
 \end{itemize}
 
+
+\begin{figure}
+\centering
+\vspace{-1em}
+\includegraphics[scale=.6]{example2.pdf}
+\vspace{-2em}
+\caption{Inheritance hierarchy diagram for figure~\ref{code:broken}.}
+\label{fig:algo}
+\vspace{-1.3em}
+\end{figure}
 Figure~\ref{code:broken} provides an illustration of how these features 
 interact, and how they can be used to do untyped object-oriented programming.
 The figure begins by constructing the object hierarchy shown in figure~
@@ -149,7 +152,7 @@ of \xt{a} on line 7 is called when we call \xt{a} with an instance of $\text{C}_
 on line 13, and the implementation of \xt{a} on line 8 is called when 
 $\text{C}_2$ is passed on line 14.
 
-In this manner, and if we ignore \cum{C}{3} briefly, the programmer has 
+In this manner, and if we ignore \cnum{C}{3} briefly, the programmer has 
 effectively built a functional interface - any \cnum{A}{1} will have an \xt{a} 
 method associated with it, and we can use \xt{a} on a \cnum{A}{1} with complete
 assurance that it will actually exist. As a result, we have built an interface
@@ -158,7 +161,7 @@ by abstracting directly from the concrete implementations.
 However, the assumption that \xt{a} is always safe on a \cnum{A}{1} is not true
 in this actual program, once we add \cnum{C}{3} back in. Julia does not impose
 any constraints on the types in a program, so \cnum{C}{3} is both perfectly valid
-and lacks a \xt{a}. As a result, line 15 produced the listed error, despite 
+and lacks an \xt{a}. As a result, line 15 produced the listed error, despite 
 dispatch having chosen the most applicable method.
 
 This problem is easy to spot in this example, because all of the type definitions
@@ -174,17 +177,20 @@ that type systems are widely applied to detect and prevent. However, untyped
 languages are uniquely difficult to type, as complex inference is typically
 required and the idioms are difficult to track with types.
 
-Despite being untyped, however, as mentioned previously Julia has a considerable
-number of types, though they are not used statically. We propose a type system
-for \emph{existing} Julia code that is able to statically detect the functional
-interfaces that are implicit in Julia type hierarchies and method definitions,
-and propose that this system can prevent ``method not found'' errors.
+Other languages, such as Rust, with traits [cite], and Haskell, with 
+typeclasses [cite], have statically checked interfaces for multimethods, but 
+cannot handle ``orphan'' implementations - a common idiom in Julia. As a 
+consequence, we need to use a new approach.
 
-Julia provides a complex and rich type system in conjunction with a moderately
-complex syntax, we have constructed a heavily paired down version of Julia that we call \jolt.
+Despite being untyped, as mentioned previously, Julia has a considerable
+number of types, though they are not used statically. We propose a type system
+for \emph{existing} Julia code that can statically infer interfaces and detect
+``method not found'' errors. Julia has a rich and complex type system, however,
+so we will introduce our type system on a heavily paired down version of Julia 
+that we call \jolt.
 
 \begin{figure}
-\begin{align*}
+\begin{align*}f
 t ::=~&  C ~|~ s\\
 s ::=~& A ~|~ \any\\
 d ::=~& \abstype{A}{s} ~|~ \contype{C}{s} \\
@@ -205,7 +211,7 @@ The three expressions in \jolt\space are local variables, object creation, and m
 Due to the concise nature of this formalism, the expression typing and operational semantics rules for \jolt have
 been omitted, as they are straightforward and does not offer much insight into the inheritance structure of Julia. 
 Instead, we will focus our attention on highlighting how \jolt\space generates and ensures correctness of the inheritance
-hierarchy created from it's abstract and concrete types. 
+hierarchy created from its abstract and concrete types. 
 
 \begin{figure}
 \begin{mathpar}
@@ -213,7 +219,7 @@ hierarchy created from it's abstract and concrete types.
 
 \inferrule*[lab={\tiny TConSelf}]{ \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C}}{ \m{m}{\ldots, \oftype{a}{C}, \ldots} \Subset C}
 
-\inferrule*[lab={\tiny TAbsChild}]{
+\inferrule*[lab={\tiny TAbsVirtual}]{
 	\forall\,C <: A: \m{m}{\ldots, \oftype{a}{C}, \ldots} \in \usable{C}\\ 
 	\forall\,A' <: A: \m{m}{\ldots, \oftype{a}{A'}, \ldots} \Subset A'}
 { \m{m}{\ldots,\oftype{a}{A}, \ldots} \Subset A}
@@ -227,12 +233,12 @@ In figure~\ref{fm:methInc}, we present our rules for when methods are enclosed a
 The symbol $\in$ denotes the standard set notion for an element being inside a set. In \jolt,
 this means the method is syntactically defined for the type it is in. The symbol $\Subset$ denotes a method being enclosed inside a type. 
 In \jolt, a method is enclosed in a type if that method exists in the inheritance hierarchy, but there might not necessarily exist an actual implementation
-of that method in the enclosing type. It is important to note the difference between $\Subset$ denoting the semantical relation of methods inside a type that represents it's place 
+of that method in the enclosing type. It is important to note the difference between $\Subset$ denoting the semantical relation of methods inside a type that represents its place 
 on the inheritance structure, while $\in$ denoting when a method is syntactically defined for a type.
 
 The \textit{TAbsSelf} rule describes when an enclosing method is defined inside that type. 
 For concrete types, their enclosing methods are always defined inside themselves, as reflected by the \textit{TConSelf} rule.
-The \textit{TAbsChild} rule describes the case when an enclosing method in an abstract type 
+The \textit{TAbsVirtual} rule describes the case when an enclosing method in an abstract type 
 is not inside that abstract type, which means it's concrete types must have this method inside them
 and that all abstract types below this abstract must have this method enclosed within them.
 
@@ -247,26 +253,26 @@ abstract type $A$ are computed by taking the intersection of all abstract subtyp
 $A'$ and concrete subtypes $C$, and combined with the methods that are defined for $A$
 itself. 
 
+This bottom-up approach to producing interfaces is the dual of the typical mechanism
+for ensuring that classes actually implement their declared interface. In a more
+traditional setting, we go from top-to-bottom, checking that the children 
+implement a strict superset of the methods on the parent, while our approach 
+ensures that the parent has a subset of the methods on the children.
+
 \section{Conclusion}
 
 Julia provides an interesting alternative to traditional functional interface 
 definition, whereby the methods of an interface are solely defined by 
 the concrete implementations of that interface, instead of having the interface specifying
-the methods of it's concrete implementation. Despite being
+the methods of its concrete implementation. Despite being
 untyped, we are able to utilize this property to create and reason statically about an inheritance
 hierarchy within Julia. We demonstrate this approach in \jolt\space, a minimal subset
 of Julia. \jolt\space provides static type checking for safe calls of multi-method.
 
-The concept of creating interfaces for multi-method dispatching is not novel, features such 
-as Haskell's type classes \textcolor{red}{[cite]} and Rust's trait systems \textcolor{red}{[cite]} behaves similarly.
-In Rust, it is not possible to create orphans (akin to concrete types defined outside the class
-whereby it's associated abstract type is defined), however, this is possible in Julia. 
-In the case of \jolt, any orphans follow the dynamic behavior of Julia, therefore no static guarantee would
-be provided for orphans.
-
 Our approach towards \jolt\space originated from the typed runtime of Julia, which has the potential to
-provide the basis for other static analyses. New language features, such as purity, has the possibility
-to be introduced in the future as types are already extensively used within Julia code.
+provide the basis for other static analyses. New language features, such as purity, that leverage
+existing types in Julia code could also provide additional performance and usability, with few to
+no changes required to the existing codebase.
 
 \bibliographystyle{plain}
 \bibliography{main}
