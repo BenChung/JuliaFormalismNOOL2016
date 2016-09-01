@@ -106,7 +106,7 @@ Closest candidates are:
 Julia is another such programming language, as it provides multi-method dispatch 
 and an interface system that focuses on an abstract struct-like construct. 
 Julia was originally designed for the purpose of scientific computation, in the vein of 
-R or Matlab\cite{bezan}, containing a number of features designed specifically to support 
+R or MATLAB\cite{bezan}, containing a number of features designed specifically to support 
 numeric computation and other tasks common in scientific programs.
 
 
@@ -192,8 +192,8 @@ types that already exist in Julia code as static types~\cite{bracha}.
 
 
 \begin{figure}
-\begin{align*}f
-t ::=~&  C ~|~ s\\
+\begin{align*}
+t ::=~& C ~|~ s\\
 s ::=~& A ~|~ \any\\
 d ::=~& \abstype{A}{s} ~|~ \contype{C}{s} \\
   & |~ \m{m}{\oftype{a}{t}, ~\ldots} = e\\
@@ -204,7 +204,7 @@ e ::=~& x ~|~ \xt{new} ~ C() ~|~ m(e,~\ldots) \\
 \end{figure}
 
 \jolt\space formalizes a minimal subset of Julia. In Figure~\ref{fm:syntax}, we present the entire
-syntax for \jolt, which consists of types (\xt{t}), declarations (\xt{d}), and expressions (\xt{e}). 
+syntax for \jolt, which consists of all types (\xt{t}), heritable types (\xt{s}), declarations (\xt{d}), and expressions (\xt{e}). 
 Types in \jolt\space are either a name, which can be the name of an abstract type (\xt{A}) or a concrete type (\xt{C}), 
 or the \any\space keyword, which denotes the top type. The declarations 
 of \jolt\space consists of declaring an abstract type, declaring a concrete type, and defining the body of a method.
