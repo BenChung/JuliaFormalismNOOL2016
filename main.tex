@@ -187,8 +187,9 @@ number of types, though they are not used statically. We propose a type system c
 for \emph{existing} Julia code that can statically infer interfaces and detect
 ``method not found'' errors, over a heavily pared down version of Julia.
 \jolt\space does not introduce any new types to Julia, instead it uses the existing dynamic
-types that already exist in Julia code as static types.
+types that already exist in Julia code as static types~\cite{bracha}.
 \jolt\space analyses these types statically to detect dynamic errors ahead of time.
+
 
 \begin{figure}
 \begin{align*}f
@@ -271,9 +272,9 @@ hierarchy within Julia. We demonstrate this approach in \jolt\space, a minimal s
 of Julia. \jolt\space provides static type checking for safe calls of multi-method.
 
 Our approach towards \jolt\space originated from the typed runtime of Julia, which has the potential to
-provide the basis for other static analyses. New language features, such as purity, that leverage
-existing types in Julia code could also provide additional performance and usability, with few to
-no changes required to the existing codebase.
+provide the basis for other static analyses. Future work could include extending
+the type system to encompass the rest of Julia, as well as handling dynamic 
+behavior such as reflection and dynamic loading.
 
 \bibliographystyle{plain}
 \bibliography{main}
