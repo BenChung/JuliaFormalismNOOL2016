@@ -174,11 +174,11 @@ errors that are difficult to detect ahead of time.
 An interesting observation about the issue identified in Figure~\ref{code:broken}
 is that it can be seen as a ``message not understood'' error, exactly the kind
 that type systems are widely applied to detect and prevent. However, untyped 
-languages are uniquely difficult to type \textcolor{red}{[cite] for gradual typing}, as complex inference is typically
+languages are uniquely difficult to type~\cite{cannonpython}, as complex inference is typically
 required and the idioms are difficult to track with types.
 
-Other languages, such as Rust, with traits [cite], and Haskell, with 
-typeclasses [cite], have statically checked interfaces for multimethods, but 
+Other languages, such as Rust, with traits~\cite{rust}, and Haskell, with 
+typeclasses~\cite{typeclasses}, have statically checked interfaces for multimethods, but 
 cannot handle ``orphan'' implementations - a common idiom in Julia. As a 
 consequence, we need to use a new approach.
 
