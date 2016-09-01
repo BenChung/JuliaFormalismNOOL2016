@@ -60,7 +60,7 @@
 \copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
 \copyrightdoi{nnnnnnn.nnnnnnn}
 \begin{document}
-\title{Static Typing Without Types --- Typed Inheritance from the Bottom Up} 
+\title{Static Typing Without Static Types --- Typing Inheritance from the Bottom Up} 
 \authorinfo{Benjamin Chung \and Paley Li \and Jan Vitek}{Northeastern University}{bchung@ccs.neu.edu \and \{pa.li,j.vitek\}@neu.edu} % Annon : Benjamin Chung, Jan Vitek}{Northeastern University}{}
 \maketitle
 % We should probably have some more introductory/motivational material herezies
@@ -186,6 +186,9 @@ Despite being untyped, Julia has a considerable
 number of types, though they are not used statically. We propose a type system called \jolt\space
 for \emph{existing} Julia code that can statically infer interfaces and detect
 ``method not found'' errors, over a heavily pared down version of Julia.
+\jolt\space does not introduce any new types to Julia, instead it uses the existing dynamic
+types that already exist in Julia code as static types.
+\jolt\space analyses these types statically to detect dynamic errors ahead of time.
 
 \begin{figure}
 \begin{align*}f
