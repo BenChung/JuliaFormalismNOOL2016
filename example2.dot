@@ -1,7 +1,7 @@
 digraph G {
 	node [shape="Mrecord"];
 	{rank=source;A_1 [ label = <<table border="0" cellspacing="0">
-                    <tr><td width="50"  port="port1" border="0">A<SUB>1</SUB></td></tr>
+                    <tr><td width="50"  port="port1" border="0">A</td></tr>
                 </table>>];}
 	node [shape=none]; 
 	{rank=same; 
@@ -13,18 +13,13 @@ digraph G {
                     <tr><td width="50"  port="port1" border="1">C<SUB>2</SUB></td></tr>
                     <tr><td width="50" border="1">a</td></tr>
                 </table>>];}
-	{rank=sink; C_3 [label = <<table border="0" cellspacing="0">
+	{C_3 [label = <<table border="0" cellspacing="0">
                     <tr><td width="50"  port="port1" border="1">C<SUB>3</SUB></td></tr>
                 </table>>];}
-	node [shape="Mrecord"];
-	A_2 [ label = <<table border="0" cellspacing="0">
-                    <tr><td width="50"  port="port1" border="0">A<SUB>2</SUB></td></tr>
-                </table>>];
     {       
-        A_2 -> A_1 [arrowhead = "empty", style="dashed"];
 		C_1:port1:ne -> A_1;
 		C_2:port1 -> A_1; 
-		C_3:port1 -> A_2;
+		C_3:port1 -> A_1;
 	}
 }
 

@@ -69,8 +69,9 @@
 Julia is an untyped imperative programming language designed for scientific computing. 
 Despite being untyped, Julia provides a rich runtime type system that includes features such as  
 inheritance, but lacks mechanisms to ensure compliance with interfaces.
-We propose a static type system for a subset of Julia, called \jolt, that rules out functional interface mismatches
-with no syntactic alteration to the core of Julia.
+We propose a static type system for a subset of Julia, called \jolt, ruling out functional interface mismatches
+by synthesizing interfaces from concrete implementations. \jolt\space can rule
+out some type errors in existing code without any new annotations, providing extra safety for free.
 \end{abstract}
 
 
@@ -142,27 +143,27 @@ Figure~\ref{code:broken} provides an illustration of how these features
 interact, and how they can be used to do untyped object-oriented programming.
 The diagram begins by constructing the object hierarchy shown in Figure~
 \ref{fig:algo}, as well as a function \texttt{problem}, which calls the function 
-\xt{a} on an argument of type $\text{A}_1$.
+\xt{a} on an argument of type $\text{A}$. 
 
 The next step is to actually call the methods we have defined. Julia performs
 dispatch by looking for the \emph{most specific method} whose arguments are
 satisfied by the given value - in essence, giving us a type guarantee that the
 argument will always be of the declared type. In this way, the implementation 
-of \xt{a} on line 7 is called when we call \xt{a} with an instance of $\text{C}_1$
-on line 13, and the implementation of \xt{a} on line 8 is called when 
-$\text{C}_2$ is passed on line 14.
+of \xt{a} on line 6 is called when we call \xt{a} with an instance of $\text{C}_1$
+on line 13, and the implementation of \xt{a} on line 7 is called when 
+$\text{C}_2$ is passed on line 13.
 
 In this manner, and if we ignore \cnum{C}{3} briefly, the programmer has 
-effectively built a functional interface - any \cnum{A}{1} will have an \xt{a} 
-method associated with it, and we can use \xt{a} on a \cnum{A}{1} with complete
+effectively built a functional interface - any \xt{A} will have an \xt{a} 
+method associated with it, and we can use \xt{a} on a \xt{A} with complete
 assurance that it will actually exist. As a result, we have built an interface
-by abstracting directly from the concrete implementations.
+by abstracting directly from the concrete implementations. 
 
-However, the assumption that \xt{a} is always safe on a \cnum{A}{1} is not true
+However, the assumption that \xt{a} is always safe on a \xt{A} is not true
 in this actual program, once we add \cnum{C}{3} back in. Julia does not impose
 any constraints on the types in a program, so \cnum{C}{3} is perfectly valid
 while lacking \xt{a}. As a result, line 15 produced the listed error, despite 
-dispatch having chosen the most applicable method.
+the argument to \xt{problem} being type correct.
 
 This problem is easy to spot in this example, because all of the type definitions
 are simple and in the same place. However, in a real Julia program, types can be
@@ -182,13 +183,14 @@ typeclasses~\cite{typeclasses}, have statically checked interfaces for multimeth
 cannot handle ``orphan'' implementations - a common idiom in Julia. As a 
 consequence, we need to use a new approach.
 
-Despite being untyped, Julia has a considerable
-number of types, though they are not used statically. We propose a type system called \jolt\space
+Despite being untyped, Julia code uses a lot of type annotations, though they 
+are not used statically. We propose a type system called \jolt\space
 for \emph{existing} Julia code that can statically infer interfaces and detect
 ``method not found'' errors, over a heavily pared down version of Julia.
-\jolt\space does not introduce any new types to Julia, instead it uses the existing dynamic
-types that already exist in Julia code as static types~\cite{bracha}.
-\jolt\space analyses these types statically to detect dynamic errors ahead of time.
+\jolt\space does not introduce any new types to Julia, instead using the
+type annotations, which already exist in Julia code, for static typing
+In the vein of optional typing~\cite{bracha}, \jolt\space statically type checks
+the program without adding any new syntax or semantics, while detecting dynamic errors statically.
 
 
 \begin{figure}
@@ -204,10 +206,10 @@ e ::=~& x ~|~ \xt{new} ~ C() ~|~ m(e,~\ldots) \\
 \end{figure}
 
 \jolt\space formalizes a minimal subset of Julia. In Figure~\ref{fm:syntax}, we present the entire
-syntax for \jolt, which consists of all types (\xt{t}), heritable types (\xt{s}), declarations (\xt{d}), and expressions (\xt{e}). 
-Types in \jolt\space are either a name, which can be the name of an abstract type (\xt{A}) or a concrete type (\xt{C}), 
+syntax for \jolt, which consists of all types ($t$), heritable types ($s$), declarations ($d$), and expressions ($e$). 
+Types in \jolt\space are either a name, which can be the name of an abstract type ($A$) or a concrete type ($C$), 
 or the \any\space keyword, which denotes the top type. The declarations 
-of \jolt\space consists of declaring an abstract type, declaring a concrete type, and defining the body of a method.
+of \jolt\space declare abstract types, concrete types, and methods.
 The three expressions in \jolt\space are local variables, object creation, and method invocation. 
 
 Due to the concise nature of this formalism, the expression typing and operational semantics rules for \jolt have
@@ -241,7 +243,7 @@ on the inheritance structure, while $\in$ denoting when a method is syntacticall
 The \textit{TAbsSelf} rule describes when an enclosing method is defined inside that type. 
 For concrete types, their enclosing methods are always defined inside themselves, as reflected by the \textit{TConSelf} rule.
 The \textit{TAbsVirtual} rule describes the case when an enclosing method in an abstract type 
-is not inside that abstract type, which means it's concrete types must have this method inside them
+is not inside that abstract type, which means its types must have this method inside them
 and that all abstract types below this abstract must have this method enclosed within them.
 
 An abstract type is considered correct when three separate components are shown. The first component requires the name of the type to be well-formed, 
