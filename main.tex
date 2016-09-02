@@ -68,10 +68,10 @@
 \begin{abstract}
 Julia is an untyped imperative programming language designed for scientific computing. 
 Despite being untyped, Julia provides a rich runtime type system that includes features such as  
-inheritance, but lacks mechanisms to ensure compliance with interfaces.
+inheritance, but lacks the mechanisms to ensure compliance with interfaces.
 We propose a static type system for a subset of Julia, called \jolt, ruling out functional interface mismatches
-by synthesizing interfaces from concrete implementations. \jolt\space can rule
-out some type errors in existing code without any new annotations, providing extra safety for free.
+by synthesizing abstract interfaces from concrete implementations. \jolt\space can rule
+out some type errors in existing code without any new annotations, providing additional safety for free.
 \end{abstract}
 
 
@@ -147,28 +147,28 @@ The diagram begins by constructing the object hierarchy shown in Figure~
 
 The next step is to actually call the methods we have defined. Julia performs
 dispatch by looking for the \emph{most specific method} whose arguments are
-satisfied by the given value - in essence, giving us a type guarantee that the
+satisfied by the given value - in essence, providing a type guarantee that the
 argument will always be of the declared type. In this way, the implementation 
 of \xt{a} on line 6 is called when we call \xt{a} with an instance of $\text{C}_1$
 on line 13, and the implementation of \xt{a} on line 7 is called when 
 $\text{C}_2$ is passed on line 13.
 
 In this manner, and if we ignore \cnum{C}{3} briefly, the programmer has 
-effectively built a functional interface - any \xt{A} will have an \xt{a} 
+effectively built a functional interface. Any \xt{A} will have an \xt{a} 
 method associated with it, and we can use \xt{a} on a \xt{A} with complete
 assurance that it will actually exist. As a result, we have built an interface
 by abstracting directly from the concrete implementations. 
 
-However, the assumption that \xt{a} is always safe on a \xt{A} is not true
+However, the assumption that \xt{a} is always safe on an \xt{A} is not true
 in this actual program, once we add \cnum{C}{3} back in. Julia does not impose
 any constraints on the types in a program, so \cnum{C}{3} is perfectly valid
 while lacking \xt{a}. As a result, line 15 produced the listed error, despite 
 the argument to \xt{problem} being type correct.
 
-This problem is easy to spot in this example, because all of the type definitions
-are simple and in the same place. However, in a real Julia program, types can be
-imported from other files and exist in much larger hierarchies than the one seen
-here. Therefore, a functional interface could be violated by a library, resulting in
+The error is easily spotted in this example, because all of the type definitions
+are simple and locally defined. However, in real Julia programs, types can be
+imported from other files and exist in more complex hierarchies. Therefore, 
+a functional interface could be violated by a library, resulting in
 errors that are difficult to detect ahead of time.
 
 \section{\jolt}
@@ -178,7 +178,7 @@ that type systems are widely applied to detect and prevent. However, untyped
 languages are uniquely difficult to type~\cite{cannonpython}, as complex inference is typically
 required and the idioms are difficult to track with types.
 
-Other languages, such as Rust, with traits~\cite{rust}, and Haskell, with 
+Languages, such as Rust, with traits~\cite{rust}, and Haskell, with 
 typeclasses~\cite{typeclasses}, have statically checked interfaces for multimethods, but 
 cannot handle ``orphan'' implementations - a common idiom in Julia. As a 
 consequence, we need to use a new approach.
@@ -188,7 +188,7 @@ are not used statically. We propose a type system called \jolt\space
 for \emph{existing} Julia code that can statically infer interfaces and detect
 ``method not found'' errors, over a heavily pared down version of Julia.
 \jolt\space does not introduce any new types to Julia, instead using the
-type annotations, which already exist in Julia code, for static typing
+type annotations, which already exist in Julia code, for static typing.
 In the vein of optional typing~\cite{bracha}, \jolt\space statically type checks
 the program without adding any new syntax or semantics, while detecting dynamic errors statically.
 
